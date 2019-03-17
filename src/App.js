@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import './App.css'
 
 import Header from "./components/Header"
-import getWeb3 from './components/getWeb3'
+import GetWeb3 from './components/GetWeb3'
 import Exchange from './contracts/MyExchange.json'
 import TestingToken from './contracts/TestingToken.json'
 import MyExchange from './components/MyExchange'
@@ -28,7 +28,7 @@ class App extends Component {
     async loadBlockchainData() {
         const expectedNetwork = 5777
         try {
-            const web3 = await getWeb3()
+            const web3 = await GetWeb3()
             const network = await web3.eth.net.getId()
             const accounts = await web3.eth.getAccounts()
             if (network === expectedNetwork) {

@@ -166,9 +166,9 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "pragma solidity 0.5.2;\r\n\r\n\r\n/**\r\n * @title ERC20 interface\r\n * @dev see https://github.com/ethereum/EIPs/issues/20\r\n */\r\ninterface IERC20 {\r\n\r\n    /// @notice send `_value` token to `_to` from `msg.sender`\r\n    /// @param _to The address of the recipient\r\n    /// @param _value The amount of token to be transferred\r\n    /// @return Whether the transfer was successful or not\r\n    function transfer(address _to, uint256 _value) external returns (bool);\r\n\r\n    /// @notice `msg.sender` approves `_spender` to spend `_value` tokens\r\n    /// @param _spender The address of the account able to transfer the tokens\r\n    /// @param _value The amount of tokens to be approved for transfer\r\n    /// @return Whether the approval was successful or not\r\n    function approve(address _spender, uint256 _value) external returns (bool);\r\n\r\n    /// @notice send `_value` token to `_to` from `_from` on the condition it is approved by `_from`\r\n    /// @param _from The address of the sender\r\n    /// @param _to The address of the recipient\r\n    /// @param _value The amount of token to be transferred\r\n    /// @return Whether the transfer was successful or not\r\n    function transferFrom(address _from, address _to, uint256 _value) external returns (bool);\r\n\r\n    /**\r\n     * @dev Total number of tokens in existence\r\n     */\r\n    //function totalSupply() external view returns (uint256);\r\n\r\n    /// @param _owner The address from which the balance will be retrieved\r\n    /// @return The balance\r\n    function balanceOf(address _owner) external view returns (uint256);\r\n\r\n    /// @param _owner The address of the account owning tokens\r\n    /// @param _spender The address of the account able to transfer the tokens\r\n    /// @return Amount of remaining tokens allowed to spent\r\n    function allowance(address _owner, address _spender) external view returns (uint256);\r\n\r\n    event LogTransfer(address indexed _from, address indexed _to, uint256 _value);\r\n\r\n    event LogApproval(address indexed _owner, address indexed _spender, uint256 _value);\r\n}\r\n",
-  "sourcePath": "C:\\Users\\Madness\\Desktop\\TFG\\exchange\\tfg\\contracts\\IERC20.sol",
+  "sourcePath": "C:\\Users\\Madness\\Desktop\\TFG\\exchange\\exchange\\contracts\\IERC20.sol",
   "ast": {
-    "absolutePath": "/C/Users/Madness/Desktop/TFG/exchange/tfg/contracts/IERC20.sol",
+    "absolutePath": "/C/Users/Madness/Desktop/TFG/exchange/exchange/contracts/IERC20.sol",
     "exportedSymbols": {
       "IERC20": [
         63
@@ -946,7 +946,7 @@
     "src": "0:2033:0"
   },
   "legacyAST": {
-    "absolutePath": "/C/Users/Madness/Desktop/TFG/exchange/tfg/contracts/IERC20.sol",
+    "absolutePath": "/C/Users/Madness/Desktop/TFG/exchange/exchange/contracts/IERC20.sol",
     "exportedSymbols": {
       "IERC20": [
         63
@@ -1729,7 +1729,7 @@
   },
   "networks": {},
   "schemaVersion": "3.0.2",
-  "updatedAt": "2019-03-16T17:27:26.319Z",
+  "updatedAt": "2019-03-17T18:38:04.567Z",
   "devdoc": {
     "details": "see https://github.com/ethereum/EIPs/issues/20\r",
     "methods": {

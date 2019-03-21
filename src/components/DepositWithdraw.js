@@ -24,12 +24,6 @@ class DepositWithdraw extends Component {
         this.getUserBalanceInContract(this.props.tokenContract.options.address);
     }
 
-    /*componentDidUpdate () {
-        this.getWalletTokenBalance();
-        this.getUserBalanceInContract(this.ZERO_ADDRESS);
-        this.getUserBalanceInContract(this.props.tokenContract.options.address);
-    }*/
-
     async getWalletTokenBalance() {
             try{
                 const userTokenBalance = await this.props.exchangeContract.methods.balanceOf(this.props.tokenContract.options.address).call( { from: this.props.userAccount });
@@ -43,18 +37,31 @@ class DepositWithdraw extends Component {
 
     async getUserBalanceInContract(tokenAddress) {
         try {
-            const balance = await this.props.exchangeContract.methods.getUserBalanceForToken(tokenAddress).call( { from: this.props.userAccount });
-            console.log(balance);
+            const balanceWei = await this.props.exchangeContract.methods.getUserBalanceForToken(tokenAddress).call( { from: this.props.userAccount });
+            const balance = this.props.web3.utils.fromWei(balanceWei, 'ether');
             if (tokenAddress !== this.ZERO_ADDRESS) {
                 this.setState({
-                    tokenBalanceInContract: balance,
+                    tokenBalanceInContract: balanceWei,
                 });
             } else {
                 this.setState({
                     userBalanceInContract: balance,
                 });
             }
-            console.log(balance);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    async deposit(amount) {
+        try{
+            const amountWei = this.props.web3.utils.toWei(String(amount), 'ether');
+            await this.props.exchangeContract.methods.deposit().send( {
+                gas: 250000,
+                from: this.props.userAccount,
+                value: amountWei
+             });
+            this.updateUserBalance();
         } catch (err) {
             console.log(err);
         }
@@ -62,7 +69,9 @@ class DepositWithdraw extends Component {
 
     async approveContract(amount) {
         try {
-            await this.props.tokenContract.methods.approve(this.props.exchangeContract.options.address, amount).send( { from: this.props.userAccount });
+            await this.props.tokenContract.methods.approve(this.props.exchangeContract.options.address, amount).send( {
+                from: this.props.userAccount
+            });
         } catch (err) {
             console.log(err);
         }
@@ -71,24 +80,46 @@ class DepositWithdraw extends Component {
     async depositToken(tokenAddress, amount) {
         try{
             this.approveContract(amount);
-            await this.props.exchangeContract.methods.depositToken(tokenAddress, amount).send( { gas: 250000, from: this.props.userAccount })
-            this.onConfirmationSuccess(tokenAddress);
-            this.setState({
-                message: "Transaction succeeded",
+            await this.props.exchangeContract.methods.depositToken(tokenAddress, amount).send( {
+                gas: 250000,
+                from: this.props.userAccount
             });
+            this.updateUserTokenBalance(tokenAddress);
         } catch (err) {
             console.log(err);
         }
     }
 
-    /*async withdrawToken(tokenAddress, amount) {
+    async withdraw(amount) {
+        try{
+            const amountWei = this.props.web3.utils.toWei(String(amount), 'ether');
+            await this.props.exchangeContract.methods.withdraw(amountWei).send( {
+                from: this.props.userAccount
+            });
+            this.updateUserBalance();
+        } catch (err) {
+            console.log(err);
+        }
+    }
 
-    }*/
+    async withdrawToken(tokenAddress, amount) {
+        try{
+            await this.props.exchangeContract.methods.withdrawToken(tokenAddress, amount).send({
+                from: this.props.userAccount
+            });
+            this.updateUserTokenBalance(tokenAddress);
+        } catch (err) {
+            console.log(err);
+        }
+    }
 
-    async onConfirmationSuccess(tokenAddress) {
+    async updateUserBalance() {
+        this.getUserBalanceInContract(this.ZERO_ADDRESS);
+    }
+
+    async updateUserTokenBalance(tokenAddress) {
         this.getWalletTokenBalance();
         this.getUserBalanceInContract(tokenAddress);
-        console.log(this.state);
     }
 
      renderUserBalances() {
@@ -117,45 +148,58 @@ class DepositWithdraw extends Component {
             );
      }
 
-     handleClick(placeholder, action) {
-         if (placeholder !== "ETH") {
-             if (action === "deposit") {
-                 return;
-             }
-         } else {
-             if (action === "deposit") {
-                 console.log("clicked");
-                 //this.depositToken(this.state.tokenContract.options.address);
-                 return;
-             }
-         }
-     }
-
-     submitForm = (e) => {
+     submitFormTokens = (e) => {
             e.preventDefault();
-            console.log(this.props.tokenContract.options.address);
-            console.log(this.state.tokenValue);
 
-            this.setState({
-                message: "Waiting for confirmation...",
-            });
-
-            this.depositToken(this.props.tokenContract.options.address, this.state.tokenValue);
+            if (this.state.key === "deposit") {
+                this.depositToken(this.props.tokenContract.options.address, this.state.tokenValue);
+            } else {
+                this.withdrawToken(this.props.tokenContract.options.address, this.state.tokenValue);
+            }
      }
 
-     getAction() {
+     renderDepositWithdrawTokens() {
          return(
-             <Form inline onSubmit = { this.submitForm }>
+             <Form inline onSubmit = { this.submitFormTokens }>
                 <Form.Group>
                     <Form.Label> Amount in Tokens </Form.Label>
                     <Form.Control
                         value = { this.state.tokenValue }
                         onChange = { event => this.setState({ tokenValue: event.target.value }) }
-                        type="text"
+                        type="number"
                         min = {0}
-                        placeholder="enter amount of tokens to deposit"
+                        placeholder="enter amount of Tokens to deposit"
                     />
-                    <Button variant = "outline-secondary" type = "submit"> Deposit </Button>
+                    <Button variant = "outline-secondary" type = "submit"> { this.state.key } </Button>
+                </Form.Group>
+             </Form>
+         );
+     }
+
+     submitFormEth = (e) => {
+            e.preventDefault();
+
+            if (this.state.key === "deposit") {
+                this.deposit(this.state.ethValue);
+            } else {
+                this.withdraw(this.state.ethValue);
+                console.log("withdraw");
+            }
+     }
+
+     renderDepsositWithdrawEth() {
+         return(
+             <Form inline onSubmit = { this.submitFormEth }>
+                <Form.Group>
+                    <Form.Label> Amount in ETH </Form.Label>
+                    <Form.Control
+                        value = { this.state.ethValue }
+                        onChange = { event => this.setState({ ethValue: event.target.value }) }
+                        type="number"
+                        min = {0}
+                        placeholder="enter amount of ETH to deposit"
+                    />
+                    <Button variant = "outline-secondary" type = "submit"> { this.state.key } </Button>
                 </Form.Group>
              </Form>
          );
@@ -166,11 +210,14 @@ class DepositWithdraw extends Component {
             <Tabs activeKey={ this.state.key } onSelect={ key => this.setState({ key }) }>
                 <Tab eventKey = 'deposit' title = 'deposit'>
                     { this.renderUserBalances() }
-                    { this.getAction() }
+                    { this.renderDepsositWithdrawEth() }
+                    { this.renderDepositWithdrawTokens() }
                     <h1> { this.state.message } </h1>
                 </Tab>
                 <Tab eventKey = 'withdraw' title = 'withdraw'>
                     { this.renderUserBalances() }
+                    { this.renderDepsositWithdrawEth() }
+                    { this.renderDepositWithdrawTokens() }
                 </Tab>
             </Tabs>
         );

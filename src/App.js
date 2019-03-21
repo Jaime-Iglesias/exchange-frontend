@@ -6,8 +6,16 @@ import DepositWithdraw from './components/DepositWithdraw';
 
 class App extends Component {
 
+    constructor(props){
+        super(props);
+
+        /*setInterval( () => {
+            console.log(this.props.web3)
+        }, 5000);*/
+    }
+
     renderApp() {
-        console.log(this.props);
+        //console.log(this.props);
         return(
             <div>
                 <Header/>
@@ -19,10 +27,11 @@ class App extends Component {
                     <Row>
                         <Col>
                             <DepositWithdraw
+                                web3 = { this.props.web3 }
                                 userAccount = { this.props.userAccount }
                                 userBalance = { this.props.userBalance }
                                 exchangeContract = { this.props.exchangeContract }
-                                tokenContract = { this.props.tokenContract }                                
+                                tokenContract = { this.props.tokenContract }
                             />
                         </Col>
                     </Row>

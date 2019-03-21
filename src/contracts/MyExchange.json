@@ -8066,12 +8066,12 @@
         }
       },
       "links": {},
-      "address": "0xf861E72259eef05a7D0DfD37aD0981Bf74a75fC7",
-      "transactionHash": "0x9e203f705976dc83461b86c062c9075d50f5d7002ed421902251627d9c6340f8"
+      "address": "0x85FCFc3AEFd80888f7567E1b3342De97D89017F5",
+      "transactionHash": "0xb06f69268ef47dd4565f272d20816773ce89934ea17d34f4b1096f584c88c5f9"
     }
   },
   "schemaVersion": "3.0.2",
-  "updatedAt": "2019-03-19T23:15:42.664Z",
+  "updatedAt": "2019-03-21T14:39:36.265Z",
   "devdoc": {
     "methods": {
       "isOwner()": {

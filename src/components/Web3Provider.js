@@ -22,6 +22,7 @@ class Web3Provider extends Component {
                 exchangeContract: null,
                 tokenContract: null,
             };
+
         }
 
         componentDidMount() {
@@ -176,8 +177,10 @@ class Web3Provider extends Component {
                 return;
             }
 
+            //console.log(this.state.web3.givenProvider);
             return (
                 <App
+                    web3 = { this.state.web3 }
                     userAccount = { this.state.userAccount }
                     userBalance = { this.state.userBalance }
                     exchangeContract = { this.state.exchangeContract }

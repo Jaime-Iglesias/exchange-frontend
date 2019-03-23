@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import Web3 from 'web3';
 
+import InstallMetamask from './metamask/InstallMetamask';
+import UnlockMetamask from './metamask/UnlockMetamask';
+import WrongNetwork from './metamask/WrongNetwork';
+import UnlockAccount from './metamask/UnlockAccount';
+
 import Exchange from '../contracts/MyExchange.json';
 import TestingToken from '../contracts/TestingToken.json';
 
@@ -52,6 +57,8 @@ class Web3Provider extends Component {
                     web3,
                 });
                 this.isMetamaskInstalled();
+            } else {
+                console.log("No web3 detected, please consider using Metamask");
             }
         }
 
@@ -148,23 +155,23 @@ class Web3Provider extends Component {
             } = this.state;
 
             if (isMetamaskInstalled === false) {
-                console.log('You need to install metamask!');
-                return;
+                console.log("install metamask!");
+                return <InstallMetamask/>;
             }
 
             if (isMetamaskUnlocked === false) {
-                console.log('Please, unlock your metamask');
-                return;
+                console.log('unlock metamask!');
+                return <UnlockMetamask/>;
             }
 
             if (networkId !== this.expectedNetworkId ) {
-                console.log('Wrong network, please change to a local network');
-                return;
+                console.log('change network in metamask!');
+                return <WrongNetwork/>;
             }
 
             if (userAccount === '' || userBalance === -1) {
-                console.log('Please unlock your account');
-                return;
+                console.log('unclock your account in metamask!');
+                return <UnlockAccount/>;
             }
 
             if (exchangeContract === null) {

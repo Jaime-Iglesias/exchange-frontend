@@ -3,6 +3,7 @@ import './App.css';
 import { Container, Row, Col } from 'react-bootstrap';
 import Header from "./components/Header";
 import DepositWithdraw from './components/DepositWithdraw';
+import TxHistory from './components/TxHistory';
 
 class App extends Component {
 
@@ -32,6 +33,10 @@ class App extends Component {
                                 userBalance = { this.props.userBalance }
                                 exchangeContract = { this.props.exchangeContract }
                                 tokenContract = { this.props.tokenContract }
+                            />
+                            <TxHistory
+                                userAccount = { this.props.userAccount }
+                                exchangeContract = { this.props.exchangeContract }
                             />
                         </Col>
                     </Row>

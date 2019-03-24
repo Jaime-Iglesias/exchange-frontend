@@ -7,13 +7,13 @@ import TxHistory from './components/TxHistory';
 
 class App extends Component {
 
-    constructor(props){
+    /*constructor(props){
         super(props);
 
         /*setInterval( () => {
             console.log(this.props.web3)
-        }, 5000);*/
-    }
+        }, 5000);
+    }*/
 
     renderApp() {
         //console.log(this.props);
@@ -34,7 +34,12 @@ class App extends Component {
                                 exchangeContract = { this.props.exchangeContract }
                                 tokenContract = { this.props.tokenContract }
                             />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
                             <TxHistory
+                                web3 = { this.props.web3 }
                                 userAccount = { this.props.userAccount }
                                 exchangeContract = { this.props.exchangeContract }
                             />

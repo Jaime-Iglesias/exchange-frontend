@@ -20,7 +20,7 @@ class TxHistory extends Component {
 
     eventFormater(event) {
         if (event) {
-            const FormattedEvent = {
+            var FormattedEvent = {
                 id: event.id,
                 transactionHash: event.transactionHash,
                 token: '',
@@ -52,12 +52,15 @@ class TxHistory extends Component {
             filter: { _user: this.props.userAccount }
         })
         .on('data', (event) => {
+            var index = this.state.fundsEventList.indexOf(event.id);
+            if (index === -1) {
                 this.setState({
                     fundsEventList: this.state.fundsEventList.concat(this.eventFormater(event)),
                 });
+            }
         })
         .on('changed', (event) => {
-            const index = this.state.fundsEventList.indexOf(event.id);
+            const index = this.state.fundsEventList.indexOf(event.transactionHash);
             if (index > -1) {
                 this.setState({
                     fundsEventList: this.state.fundsEventList.splice(index, 1),
@@ -74,9 +77,9 @@ class TxHistory extends Component {
             filter: { _user: this.props.userAccount }
         })
         .on('data', (event) => {
-                this.setState({
-                    fundsEventList: this.state.fundsEventList.concat(this.eventFormater(event)),
-                });
+            this.setState({
+                fundsEventList: this.state.fundsEventList.concat(this.eventFormater(event)),
+            });
         })
         .on('changed', (event) => {
             const index = this.state.fundsEventList.indexOf(event.transactionHash);

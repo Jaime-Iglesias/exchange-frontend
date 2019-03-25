@@ -54,6 +54,7 @@ class DepositWithdraw extends Component {
     }
 
     async deposit(amount) {
+        console.log(1);
         try{
             const amountWei = this.props.web3.utils.toWei(String(amount), 'ether');
             await this.props.exchangeContract.methods.deposit().send( {
@@ -98,6 +99,7 @@ class DepositWithdraw extends Component {
     }
 
     async depositToken(tokenAddress, amount) {
+        console.log(2);
         try{
             this.approveContract(amount);
             await this.props.exchangeContract.methods.depositToken(tokenAddress, amount).send( {

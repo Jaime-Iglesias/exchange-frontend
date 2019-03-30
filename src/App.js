@@ -4,6 +4,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import Header from "./components/Header";
 import DepositWithdraw from './components/DepositWithdraw';
 import TxHistory from './components/TxHistory';
+import CreateOrders from './components/CreateOrders';
 
 class App extends Component {
 
@@ -29,6 +30,16 @@ class App extends Component {
                         <Col>
                             <DepositWithdraw
                                 web3 = { this.props.web3 }
+                                userAccount = { this.props.userAccount }
+                                userBalance = { this.props.userBalance }
+                                exchangeContract = { this.props.exchangeContract }
+                                tokenContract = { this.props.tokenContract }
+                            />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <CreateOrders
                                 userAccount = { this.props.userAccount }
                                 userBalance = { this.props.userBalance }
                                 exchangeContract = { this.props.exchangeContract }

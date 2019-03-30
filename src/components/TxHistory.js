@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Container, Tabs, Tab, Table } from 'react-bootstrap';
+import {Container, Col, Card, Tabs, Tab, Table } from 'react-bootstrap';
 
 class TxHistory extends Component {
 
@@ -126,13 +126,18 @@ class TxHistory extends Component {
     renderEventList() {
         return(
             <Container fluid>
-                <Tabs activeKey = { this.state.key } onSelect = { key => this.setState({ key })}>
-                    <Tab eventKey = 'funds' title = 'funds'>
-                        { this.renderFundsTab() }
-                    </Tab>
-                    <Tab eventKey = 'orders' title = 'my orders'>
-                    </Tab>
-                </Tabs>
+                <Card>
+                    <Card.Title> My transactions </Card.Title>
+                    <Card.Body>
+                        <Tabs activeKey = { this.state.key } onSelect = { key => this.setState({ key })}>
+                            <Tab eventKey = 'funds' title = 'funds'>
+                                { this.renderFundsTab() }
+                            </Tab>
+                            <Tab eventKey = 'orders' title = 'my orders'>
+                            </Tab>
+                        </Tabs>
+                    </Card.Body>
+                </Card>
             </Container>
         );
     }

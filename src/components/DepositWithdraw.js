@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Row, Col, Container, Form, Button, Table, Tabs, Tab, InputGroup } from 'react-bootstrap';
+import {Row, Col, Container, Card, Form, Button, Table, Tabs, Tab, InputGroup } from 'react-bootstrap';
 
 class DepositWithdraw extends Component {
     constructor(props) {
@@ -54,7 +54,6 @@ class DepositWithdraw extends Component {
     }
 
     async deposit(amount) {
-        console.log(1);
         try{
             const amountWei = this.props.web3.utils.toWei(String(amount), 'ether');
             await this.props.exchangeContract.methods.deposit().send( {
@@ -67,7 +66,8 @@ class DepositWithdraw extends Component {
                     message: 'Transaction pending...',
                 });
             })
-            .on('receipt', () => {
+            .on('receipt', (receipt) => {
+                console.log(receipt);
                 this.setState({
                     message: 'Transaction has been mined',
                 });
@@ -99,7 +99,6 @@ class DepositWithdraw extends Component {
     }
 
     async depositToken(tokenAddress, amount) {
-        console.log(2);
         try{
             this.approveContract(amount);
             await this.props.exchangeContract.methods.depositToken(tokenAddress, amount).send( {
@@ -111,7 +110,7 @@ class DepositWithdraw extends Component {
                     message: 'Transaction pending...',
                 });
             })
-            .on('receipt', () => {
+            .on('receipt', (receipt) => {
                 this.setState({
                     message: 'Transaction has been mined',
                 });
@@ -122,9 +121,19 @@ class DepositWithdraw extends Component {
                 });
             })
             .on('error', (err) => {
-                this.setState({
-                    message: err.message,
-                });
+                if (err.message.contains("address cannot be the 0 address")) {
+                    this.setState({
+                        message: "token address cannot be the 0 address",
+                    });
+                } else if (err.message.contains("not enough allowance")) {
+                    this.setState({
+                        message: "You need to approve the exchange contract before the deposit",
+                    });
+                } else if (err.message.contains("ERC20 transfer failed")) {
+                    this.setState({
+                        message: "Somethin went wrong",
+                    });
+                }
             });
             this.updateUserTokenBalance(tokenAddress);
         } catch (err) {
@@ -154,9 +163,19 @@ class DepositWithdraw extends Component {
                 });
             })
             .on('error', (err) => {
-                this.setState({
-                    message: err.message,
-                });
+                if (err.message.includes("not enough balance")) {
+                    this.setState({
+                        message: "you do not have enough ETH to withdraw",
+                    });
+                } else if (err.message.includes("ERC20 transfer failed")) {
+                    this.setState({
+                        message: "an error occured in the token contract",
+                    });
+                } else {
+                    this.setState({
+                        message: "something went wrong, please check the transaction",
+                    });
+                }
             });
             this.updateUserBalance();
         } catch (err) {
@@ -185,9 +204,23 @@ class DepositWithdraw extends Component {
                 });
             })
             .on('error', (err) => {
-                this.setState({
-                    message: err.message,
-                });
+                if (err.message.includes("address cannot be the 0 address")) {
+                    this.setState({
+                        message: "token address cannot be the 0 address",
+                    });
+                } else if (err.message.includes("not enough balance")) {
+                    this.setState({
+                        message: "You do not have enough tokens to withdraw",
+                    });
+                } else if (err.message.includes("ERC-20 transfer failed")) {
+                    this.setState({
+                        message: "an error occured in the token contract",
+                    });
+                } else {
+                    this.setState({
+                        message: "something went wrong, please check the transaction",
+                    });
+                }
             });
             this.updateUserTokenBalance(tokenAddress);
         } catch (err) {
@@ -300,22 +333,27 @@ class DepositWithdraw extends Component {
     render() {
         return(
             <Container fluid>
-                <Tabs activeKey = { this.state.key } onSelect = { key => this.setState({ key }) }>
-                    <Tab display = 'inline' eventKey = 'deposit' title = 'deposit'>
-                        { this.renderUserBalances() }
-                        <Row>
-                            <Col md = "auto"> { this.renderDepsositWithdrawEth() } </Col>
-                            <Col md = "auto"> { this.renderDepositWithdrawTokens() } </Col>
-                        </Row>
-                    </Tab>
-                    <Tab eventKey = 'withdraw' title = 'withdraw'>
-                        { this.renderUserBalances() }
-                        <Row>
-                            <Col md = "auto"> { this.renderDepsositWithdrawEth() } </Col>
-                            <Col md = "auto"> { this.renderDepositWithdrawTokens() } </Col>
-                        </Row>
-                    </Tab>
-                </Tabs>
+                <Card>
+                    <Card.Title> My Funds </Card.Title>
+                    <Card.Body>
+                        <Tabs activeKey = { this.state.key } onSelect = { key => this.setState({ key }) }>
+                            <Tab display = 'inline' eventKey = 'deposit' title = 'deposit'>
+                                { this.renderUserBalances() }
+                                <Row>
+                                    <Col md = "auto"> { this.renderDepsositWithdrawEth() } </Col>
+                                    <Col md = "auto"> { this.renderDepositWithdrawTokens() } </Col>
+                                </Row>
+                            </Tab>
+                            <Tab eventKey = 'withdraw' title = 'withdraw'>
+                                { this.renderUserBalances() }
+                                <Row>
+                                    <Col md = "auto"> { this.renderDepsositWithdrawEth() } </Col>
+                                    <Col md = "auto"> { this.renderDepositWithdrawTokens() } </Col>
+                                </Row>
+                            </Tab>
+                        </Tabs>
+                    </Card.Body>
+                </Card>
             </Container>
         );
     }

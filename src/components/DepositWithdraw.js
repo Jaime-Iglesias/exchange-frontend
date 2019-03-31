@@ -121,15 +121,15 @@ class DepositWithdraw extends Component {
                 });
             })
             .on('error', (err) => {
-                if (err.message.contains("address cannot be the 0 address")) {
+                if (err.message.includes("address cannot be the 0 address")) {
                     this.setState({
                         message: "token address cannot be the 0 address",
                     });
-                } else if (err.message.contains("not enough allowance")) {
+                } else if (err.message.includes("not enough allowance")) {
                     this.setState({
                         message: "You need to approve the exchange contract before the deposit",
                     });
-                } else if (err.message.contains("ERC20 transfer failed")) {
+                } else if (err.message.includes("ERC20 transfer failed")) {
                     this.setState({
                         message: "Somethin went wrong",
                     });

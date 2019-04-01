@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap'
+import { MdCached } from 'react-icons/md';
 
 class CreateOrders extends Component {
     constructor(props){
@@ -13,15 +14,24 @@ class CreateOrders extends Component {
         };
     }
 
-
-    submitForm = (e) => {
+    submitFormBuy = (e) => {
        e.preventDefault();
-       console.log("submit");
+
+       if (this.state.ethValueBuy !== 0 && this.state.amountTokensBuy !== 0) {
+           console.log("submit!");
+       }
+    }
+
+    resetFormBuy = (e) => {
+        this.setState({
+            ethValueBuy: 0,
+            amountTokensBuy: 0,
+        });
     }
 
     renderBuyOrder() {
         return(
-            <Form onSubmit = { this.submitForm }>
+            <Form onSubmit = { this.submitFormBuy }>
                 <Col>
                     <Form.Group>
                         <Form.Label> Prize (ETH) </Form.Label>
@@ -61,9 +71,21 @@ class CreateOrders extends Component {
         );
     }
 
+    submitFormSell = (e) => {
+       e.preventDefault();
+       console.log("submit");
+    }
+
+    resetFormSell = (e) => {
+        this.setState({
+            ethValueSell: 0,
+            amountTokensSell: 0,
+        });
+    }
+
     renderSellOrder() {
         return(
-            <Form onSubmit = { this.submitForm }>
+            <Form onSubmit = { this.submitFormSell }>
                 <Col>
                     <Form.Group>
                         <Form.Label> Prize (ETH) </Form.Label>
@@ -81,8 +103,8 @@ class CreateOrders extends Component {
                         <Form.Label> Amount (Tokens) </Form.Label>
                         <Form.Control
                             required
-                            value = { this.state.ethValueSell }
-                            onChange = { event => this.setState({ ethValueSell: event.target.value }) }
+                            value = { this.state.amountTokensSell }
+                            onChange = { event => this.setState({ amountTokensSell: event.target.value }) }
                             type = "number"
                             min = { 0 }
                         />
@@ -109,7 +131,10 @@ class CreateOrders extends Component {
                 <Row>
                     <Col>
                         <Card>
-                            <Card.Title> Buy </Card.Title>
+                            <Card.Header>
+                                <Card.Title> Buy </Card.Title>
+                                <Button className = "float-right" onClick = { this.resetFormBuy }> <MdCached/> </Button>
+                            </Card.Header>
                             <Card.Body>
                                 { this.renderBuyOrder() }
                             </Card.Body>
@@ -117,7 +142,10 @@ class CreateOrders extends Component {
                     </Col>
                     <Col>
                         <Card>
-                            <Card.Title> Sell </Card.Title>
+                            <Card.Header>
+                                Sell
+                                <Button className = "float-right" onClick = { this.resetFormSell }> <MdCached/> </Button>
+                            </Card.Header>
                             <Card.Body>
                                 { this.renderSellOrder() }
                             </Card.Body>

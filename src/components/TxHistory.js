@@ -15,7 +15,7 @@ class TxHistory extends Component {
         };
 
         this.depositListener();
-        this.withdrawListener();
+        //this.withdrawListener();
     }
 
     eventFormater(event) {

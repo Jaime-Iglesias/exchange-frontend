@@ -10908,24 +10908,6 @@
           "type": "event",
           "signature": "0x46ae78bc7b198b8b534ca0070d125569ac5f955976841c4343223079f3abf0de"
         },
-        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
-          "anonymous": false,
-          "inputs": [
-            {
-              "indexed": true,
-              "name": "previousOwner",
-              "type": "address"
-            },
-            {
-              "indexed": true,
-              "name": "newOwner",
-              "type": "address"
-            }
-          ],
-          "name": "OwnershipTransferred",
-          "type": "event",
-          "signature": "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0"
-        },
         "0xc397bb678ea0a17eaf1224ce1ad8b716dbcdc35beb31868f3a436caa1ff0c906": {
           "anonymous": false,
           "inputs": [
@@ -10968,6 +10950,24 @@
           "name": "LogOrder",
           "type": "event",
           "signature": "0xc397bb678ea0a17eaf1224ce1ad8b716dbcdc35beb31868f3a436caa1ff0c906"
+        },
+        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "previousOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event",
+          "signature": "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0"
         }
       },
       "links": {},
@@ -10976,7 +10976,7 @@
     }
   },
   "schemaVersion": "3.0.2",
-  "updatedAt": "2019-04-01T15:52:52.201Z",
+  "updatedAt": "2019-04-08T16:40:39.523Z",
   "devdoc": {
     "methods": {
       "isOwner()": {

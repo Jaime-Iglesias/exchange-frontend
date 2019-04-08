@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import './App.css';
 import { Container, Row, Col } from 'react-bootstrap';
+import { connect } from 'react-redux';
+
 import Header from "./components/Header";
 import DepositWithdraw from './components/DepositWithdraw';
 import TxHistory from './components/TxHistory';
@@ -8,64 +9,26 @@ import CreateOrders from './components/CreateOrders';
 
 class App extends Component {
 
-    /*constructor(props){
-        super(props);
-
-        /*setInterval( () => {
-            console.log(this.props.web3)
-        }, 5000);
-    }*/
-
-    renderApp() {
-        //console.log(this.props);
+    render() {
         return(
             <div>
                 <Header/>
                 <Container>
                     <Row>
-                        <Col> <p> Your account: { this.props.userAccount } </p> </Col>
-                        <Col> <p> Your balance: { this.props.userBalance } </p> </Col>
+                        <Col> <p> Your account: { console.log(1) } </p> </Col>
+                        <Col> <p> Your balance: { console.log(this.props.web3) } </p> </Col>
                     </Row>
-                    <Row>
-                        <Col>
-                            <DepositWithdraw
-                                web3 = { this.props.web3 }
-                                userAccount = { this.props.userAccount }
-                                userBalance = { this.props.userBalance }
-                                exchangeContract = { this.props.exchangeContract }
-                                tokenContract = { this.props.tokenContract }
-                            />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <CreateOrders
-                                userAccount = { this.props.userAccount }
-                                userBalance = { this.props.userBalance }
-                                exchangeContract = { this.props.exchangeContract }
-                                tokenContract = { this.props.tokenContract }
-                            />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <TxHistory
-                                web3 = { this.props.web3 }
-                                userAccount = { this.props.userAccount }
-                                exchangeContract = { this.props.exchangeContract }
-                            />
-                        </Col>
-                    </Row>
+
                 </Container>
             </div>
         );
     }
-
-    render() {
-        return(
-          <div> { this.renderApp() } </div>
-      );
-    }
 }
+
+const mapStateToProps = state => ({
+    web3: state.web3.web3Instance,
+    userAddress: state.web3.userAddress,
+    networkId: state.web3.networkId
+});
 
 export default App;

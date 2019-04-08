@@ -14,6 +14,8 @@ class CreateOrders extends Component {
         };
     }
 
+
+    //sync createOrder(amountTokens, amountEth)
     submitFormBuy = (e) => {
        e.preventDefault();
 
@@ -54,6 +56,10 @@ class CreateOrders extends Component {
                             type = "number"
                             min = { 0 }
                         />
+                    </Form.Group>
+                </Col>
+                <Col>
+                    <Form.Group>
                     </Form.Group>
                 </Col>
                 <Col>

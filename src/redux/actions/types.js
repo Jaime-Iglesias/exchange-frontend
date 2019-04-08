@@ -1,0 +1,3 @@
+const LOAD_WEB3 = 'LOAD_WEB3';
+const GET_ACCOUNT = 'GET_ACCOUNT';
+const GET_NETWORK = 'GET_NETWORK';

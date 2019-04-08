@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import {Row, Col, Container, Card, Form, Button, Table, Tabs, Tab, InputGroup } from 'react-bootstrap';
+import {Row, Col, Container, Card, Table, Tabs, Tab } from 'react-bootstrap';
+
+import Deposit from './Deposit';
+import Withdraw from './Withdraw';
 
 class DepositWithdraw extends Component {
     constructor(props) {
@@ -7,14 +10,13 @@ class DepositWithdraw extends Component {
 
         this.ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
+        this.updateUserBalance = this.updateUserBalance.bind(this);
+
         this.state = {
             userBalanceInContract: -1,
             userTokenBalance: -1,
             tokenBalanceInContract: -1,
             key: "deposit",
-            ethValue: 0,
-            tokenValue: 0,
-            message: '',
         };
     }
 
@@ -53,188 +55,14 @@ class DepositWithdraw extends Component {
         }
     }
 
-    async deposit(amount) {
-        try{
-            const amountWei = this.props.web3.utils.toWei(String(amount), 'ether');
-            await this.props.exchangeContract.methods.deposit().send( {
-                gas: 250000,
-                from: this.props.userAccount,
-                value: amountWei
-            })
-            .on('transactionHash', () => {
-                this.setState({
-                    message: 'Transaction pending...',
-                });
-            })
-            .on('receipt', (receipt) => {
-                console.log(receipt);
-                this.setState({
-                    message: 'Transaction has been mined',
-                });
-            })
-            .on('confirmation', () => {
-                this.setState({
-                    message: 'Transaction confirmed!',
-                });
-            })
-            .on('error', (err) => {
-                this.setState({
-                    message: err.message,
-                });
-            });
-            this.updateUserBalance();
-        } catch (err) {
-            console.log(err);
-        }
-    }
-
-    async approveContract(amount) {
-        try {
-            await this.props.tokenContract.methods.approve(this.props.exchangeContract.options.address, amount).send( {
-                from: this.props.userAccount
-            });
-        } catch (err) {
-            console.log(err);
-        }
-    }
-
-    async depositToken(tokenAddress, amount) {
-        try{
-            this.approveContract(amount);
-            await this.props.exchangeContract.methods.depositToken(tokenAddress, amount).send( {
-                gas: 250000,
-                from: this.props.userAccount
-            })
-            .on('transactionHash', () => {
-                this.setState({
-                    message: 'Transaction pending...',
-                });
-            })
-            .on('receipt', (receipt) => {
-                this.setState({
-                    message: 'Transaction has been mined',
-                });
-            })
-            .on('confirmation', () => {
-                this.setState({
-                    message: 'Transaction confirmed!',
-                });
-            })
-            .on('error', (err) => {
-                if (err.message.includes("address cannot be the 0 address")) {
-                    this.setState({
-                        message: "token address cannot be the 0 address",
-                    });
-                } else if (err.message.includes("not enough allowance")) {
-                    this.setState({
-                        message: "You need to approve the exchange contract before the deposit",
-                    });
-                } else if (err.message.includes("ERC20 transfer failed")) {
-                    this.setState({
-                        message: "Somethin went wrong",
-                    });
-                }
-            });
-            this.updateUserTokenBalance(tokenAddress);
-        } catch (err) {
-            console.log(err);
-        }
-    }
-
-    async withdraw(amount) {
-        try{
-            const amountWei = this.props.web3.utils.toWei(String(amount), 'ether');
-            await this.props.exchangeContract.methods.withdraw(amountWei).send( {
-                from: this.props.userAccount
-            })
-            .on('transactionHash', () => {
-                this.setState({
-                    message: 'Transaction pending...',
-                });
-            })
-            .on('receipt', () => {
-                this.setState({
-                    message: 'Transaction has been mined',
-                });
-            })
-            .on('confirmation', () => {
-                this.setState({
-                    message: 'Transaction confirmed!',
-                });
-            })
-            .on('error', (err) => {
-                if (err.message.includes("not enough balance")) {
-                    this.setState({
-                        message: "you do not have enough ETH to withdraw",
-                    });
-                } else if (err.message.includes("ERC20 transfer failed")) {
-                    this.setState({
-                        message: "an error occured in the token contract",
-                    });
-                } else {
-                    this.setState({
-                        message: "something went wrong, please check the transaction",
-                    });
-                }
-            });
-            this.updateUserBalance();
-        } catch (err) {
-            console.log(err);
-        }
-    }
-
-    async withdrawToken(tokenAddress, amount) {
-        try{
-            await this.props.exchangeContract.methods.withdrawToken(tokenAddress, amount).send({
-                from: this.props.userAccount
-            })
-            .on('transactionHash', () => {
-                this.setState({
-                    message: 'Transaction pending...',
-                });
-            })
-            .on('receipt', () => {
-                this.setState({
-                    message: 'Transaction has been mined',
-                });
-            })
-            .on('confirmation', () => {
-                this.setState({
-                    message: 'Transaction confirmed!',
-                });
-            })
-            .on('error', (err) => {
-                if (err.message.includes("address cannot be the 0 address")) {
-                    this.setState({
-                        message: "token address cannot be the 0 address",
-                    });
-                } else if (err.message.includes("not enough balance")) {
-                    this.setState({
-                        message: "You do not have enough tokens to withdraw",
-                    });
-                } else if (err.message.includes("ERC-20 transfer failed")) {
-                    this.setState({
-                        message: "an error occured in the token contract",
-                    });
-                } else {
-                    this.setState({
-                        message: "something went wrong, please check the transaction",
-                    });
-                }
-            });
-            this.updateUserTokenBalance(tokenAddress);
-        } catch (err) {
-            console.log(err);
-        }
-    }
-
-    async updateUserBalance() {
-        this.getUserBalanceInContract(this.ZERO_ADDRESS);
-    }
-
-    async updateUserTokenBalance(tokenAddress) {
+     updateUserBalance() {
+        console.log(1);
         this.getWalletTokenBalance();
-        this.getUserBalanceInContract(tokenAddress);
+        console.log(2);
+        this.getUserBalanceInContract(this.ZERO_ADDRESS);
+        console.log(3);
+        this.getUserBalanceInContract(this.props.tokenContract.options.address);
+        console.log(4);
     }
 
     renderUserBalances() {
@@ -263,73 +91,6 @@ class DepositWithdraw extends Component {
         );
      }
 
-     submitFormTokens = (e) => {
-        e.preventDefault();
-
-        if (this.state.key === "deposit") {
-            this.depositToken(this.props.tokenContract.options.address, this.state.tokenValue);
-        } else {
-            this.withdrawToken(this.props.tokenContract.options.address, this.state.tokenValue);
-        }
-
-        this.setState({
-            tokenValue: 0,
-        });
-     }
-
-     renderDepositWithdrawTokens() {
-         return(
-             <Form onSubmit = { this.submitFormTokens }>
-                <Form.Label> Amount in Tokens </Form.Label>
-                 <InputGroup>
-                    <Form.Control
-                        value = { this.state.tokenValue }
-                        onChange = { event => this.setState({ tokenValue: event.target.value }) }
-                        type="number"
-                        min = {0}
-                    />
-                    <InputGroup.Append>
-                        <Button variant = "outline-secondary" type = "submit"> { this.state.key } </Button>
-                    </InputGroup.Append>
-                 </InputGroup>
-            </Form>
-         );
-     }
-
-     submitFormEth = (e) => {
-        e.preventDefault();
-
-        if (this.state.key === "deposit") {
-            this.deposit(this.state.ethValue);
-        } else {
-            this.withdraw(this.state.ethValue);
-        }
-
-        this.setState({
-            ethValue: 0,
-        });
-     }
-
-     renderDepsositWithdrawEth() {
-         return(
-             <Form onSubmit = { this.submitFormEth }>
-                <Form.Label> Amount in ETH </Form.Label>
-                 <InputGroup>
-                    <Form.Control
-                        value = { this.state.ethValue }
-                        onChange = { event => this.setState({ ethValue: event.target.value }) }
-                        type="number"
-                        min = {0}
-                        placeholder="enter amount of ETH to deposit"
-                    />
-                    <InputGroup.Append>
-                        <Button variant = "outline-secondary" type = "submit"> { this.state.key } </Button>
-                    </InputGroup.Append>
-                 </InputGroup>
-            </Form>
-         );
-     }
-
     render() {
         return(
             <Container fluid>
@@ -338,17 +99,41 @@ class DepositWithdraw extends Component {
                     <Card.Body>
                         <Tabs activeKey = { this.state.key } onSelect = { key => this.setState({ key }) }>
                             <Tab display = 'inline' eventKey = 'deposit' title = 'deposit'>
-                                { this.renderUserBalances() }
                                 <Row>
-                                    <Col md = "auto"> { this.renderDepsositWithdrawEth() } </Col>
-                                    <Col md = "auto"> { this.renderDepositWithdrawTokens() } </Col>
+                                    <Col>
+                                        { this.renderUserBalances() }
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col md = "auto">
+                                        <Deposit
+                                            web3 = { this.props.web3 }
+                                            userAccount = { this.props.userAccount }
+                                            userBalance = { this.props.userBalance }
+                                            exchangeContract = { this.props.exchangeContract }
+                                            tokenContract = { this.props.tokenContract }
+                                            updateBalance = { this.updateUserBalance }
+                                        />
+                                    </Col>
                                 </Row>
                             </Tab>
                             <Tab eventKey = 'withdraw' title = 'withdraw'>
-                                { this.renderUserBalances() }
                                 <Row>
-                                    <Col md = "auto"> { this.renderDepsositWithdrawEth() } </Col>
-                                    <Col md = "auto"> { this.renderDepositWithdrawTokens() } </Col>
+                                    <Col>
+                                        { this.renderUserBalances() }
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col md = "auto">
+                                        <Withdraw
+                                            web3 = { this.props.web3 }
+                                            userAccount = { this.props.userAccount }
+                                            userBalance = { this.props.userBalance }
+                                            exchangeContract = { this.props.exchangeContract }
+                                            tokenContract = { this.props.tokenContract }
+                                            updateBalance = { this.updateUserBalance }
+                                        />
+                                    </Col>
                                 </Row>
                             </Tab>
                         </Tabs>

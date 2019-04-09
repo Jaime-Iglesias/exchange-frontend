@@ -8,8 +8,8 @@ import TxHistory from './components/TxHistory';
 import CreateOrders from './components/CreateOrders';
 
 class App extends Component {
-
     render() {
+        console.log('render', this.props);
         return(
             <div>
                 <Header/>
@@ -26,9 +26,7 @@ class App extends Component {
 }
 
 const mapStateToProps = state => ({
-    web3: state.web3.web3Instance,
-    userAddress: state.web3.userAddress,
-    networkId: state.web3.networkId
+    web3Instance: state.web3.web3Instance,
 });
 
-export default App;
+export default connect(mapStateToProps)(App);

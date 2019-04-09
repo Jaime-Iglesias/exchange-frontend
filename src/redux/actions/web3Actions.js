@@ -34,8 +34,7 @@ const getWeb3 = () =>
     });
 
 export const loadWeb3 = () => dispatch => {
-    const web3 = getWeb3();
-    console.log('action');
+    //do some work and get the web3 instance.
     dispatch({
         type: LOAD_WEB3,
         payload: web3

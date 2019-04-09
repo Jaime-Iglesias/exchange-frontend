@@ -4,7 +4,6 @@ import App from './App';
 
 import { Provider } from 'react-redux';
 import store from './redux/store';
-import { loadWeb3 } from './redux/actions/web3Actions';
 
 import 'bootstrap/dist/css/bootstrap.css';
 import './index.css';
@@ -13,7 +12,6 @@ import './index.css';
 import * as serviceWorker from './serviceWorker';
 
 //Init web3
-loadWeb3();
 
 ReactDOM.render(
     <Provider store = { store }>

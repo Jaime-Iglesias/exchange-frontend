@@ -1,11 +1,12 @@
-import { LOAD_WEB3, GET_NETWORK, GET_EXCHANGE, GET_TOKEN } from '../actions/types';
+import {  } from '../actions/types';
 
 const initialState = {
-    web3Instance: null,
+    userAccount: '',
+    netWorkId: -1,
+    
 };
 
 export default function(state = initialState, action) {
-    console.log('reducer', action);
     switch(action.type) {
         case LOAD_WEB3:
             return {

@@ -11,8 +11,6 @@ import './index.css';
 //import CheckProvider from './components/CheckProvider';
 import * as serviceWorker from './serviceWorker';
 
-//Init web3
-
 ReactDOM.render(
     <Provider store = { store }>
         <App />

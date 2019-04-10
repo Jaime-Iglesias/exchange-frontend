@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
 
+import { connect } from 'react-redux';
+
 class Header extends Component {
 
     render() {
@@ -14,12 +16,15 @@ class Header extends Component {
                         <NavDropdown.Item href="#action/3.3"> Token3 </NavDropdown.Item>
                         <NavDropdown.Item href="#action/3.4"> Token4 </NavDropdown.Item>
                     </NavDropdown>
-                    <Nav.Link href="#gasprice"> Gas price </Nav.Link>
-                    <Nav.Link href="#about"> About </Nav.Link>
                 </Nav>
+                <Navbar.Text className="justify-content-end"> { this.props.userAccount } </Navbar.Text>
             </Navbar>
         );
     }
 }
 
-export default Header;
+const mapStateToProps = state => ({
+    userAccount: state.web3.userAccount,
+});
+
+export default connect(mapStateToProps)(Header);

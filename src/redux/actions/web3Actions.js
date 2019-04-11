@@ -1,7 +1,5 @@
-import { WEB3_LOAD, WEB3_LOAD_ERROR,
-        GET_NETWORK, NETWORK_ERROR,
-        IS_METAMASK_UNLOCKED, METAMASK_UNLOCKED_ERROR,
-        INSTANTIATE_CONTRACTS, CONTRACT_INSTANTIATION_ERROR } from './types';
+import { LOADING_CONTEXT, WEB3_LOAD, GET_NETWORK, IS_METAMASK_UNLOCKED,
+        INSTANTIATE_CONTRACTS, CONTEXT_LOAD_ERROR, CONTEXT_LOADED } from './types';
 
 import Web3 from 'web3';
 
@@ -10,6 +8,10 @@ import TestingToken from '../../contracts/TestingToken.json';
 
 export function getWeb3() {
     return async dispatch => {
+        dispatch({
+            type: LOADING_CONTEXT,
+            payload: true
+        });
         // Modern dapp browsers...
         if (window.ethereum) {
             const web3 = new Web3(window.ethereum);
@@ -24,7 +26,7 @@ export function getWeb3() {
                 dispatch(getNetwork());
             } catch (err) {
                 dispatch({
-                    type: WEB3_LOAD_ERROR,
+                    type: CONTEXT_LOAD_ERROR,
                     payload: err.message || 'Something went wrong.'
                 });
             }
@@ -38,7 +40,7 @@ export function getWeb3() {
             dispatch(getNetwork());
         } else {
             dispatch({
-                type: WEB3_LOAD_ERROR,
+                type: CONTEXT_LOAD_ERROR,
                 payload: 'No web3 detected, please consider using MetaMask'
             });
         }
@@ -58,7 +60,7 @@ export function getNetwork() {
                 dispatch(isMetaMaskUnlocked());
             } else {
                 dispatch({
-                    type: NETWORK_ERROR,
+                    type: CONTEXT_LOAD_ERROR,
                     payload: 'Wrong network, please change to local network.'
                 });
             }
@@ -66,7 +68,7 @@ export function getNetwork() {
         } catch (err) {
             console.log(err);
             dispatch({
-                type: NETWORK_ERROR,
+                type: CONTEXT_LOAD_ERROR,
                 payload: err.message || 'Something went wrong'
             });
         }
@@ -86,13 +88,13 @@ export function isMetaMaskUnlocked() {
                 dispatch(getContracts());
             } else {
                 dispatch({
-                    type: METAMASK_UNLOCKED_ERROR,
-                    payload: false
+                    type: CONTEXT_LOAD_ERROR,
+                    payload: 'please, unlock metamask.'
                 });
             }
         } catch (err) {
             dispatch({
-                type: METAMASK_UNLOCKED_ERROR,
+                type: CONTEXT_LOAD_ERROR,
                 payload: err.message || 'Something went wrong'
             });
         }
@@ -103,7 +105,6 @@ export function getContracts() {
     return async function(dispatch, getState) {
         try{
             const state = getState();
-            console.log(state);
             const exchangeContract = new state.web3.web3Instance.eth.Contract(Exchange.abi, Exchange.networks[state.web3.netWorkId].address);
             const tokenContract = new state.web3.web3Instance.eth.Contract(TestingToken.abi, TestingToken.networks[state.web3.netWorkId].address);
             if (exchangeContract && tokenContract) {
@@ -114,15 +115,22 @@ export function getContracts() {
                         tokenContract: tokenContract
                     }
                 });
+                dispatch({
+                    type: CONTEXT_LOADED,
+                    payload: {
+                        isLoading: false,
+                        isLoaded: true
+                    }
+                });
             } else{
                 dispatch({
-                    type: CONTRACT_INSTANTIATION_ERROR,
+                    type: CONTEXT_LOAD_ERROR,
                     payload: 'Could not instantiate contracts'
                 })
             }
         } catch (err) {
             dispatch({
-                type: CONTRACT_INSTANTIATION_ERROR,
+                type: CONTEXT_LOAD_ERROR,
                 payload: err.message || 'Something went wrong'
             });
         }

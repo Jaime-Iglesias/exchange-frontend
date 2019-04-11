@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 class Header extends Component {
 
     render() {
+        const { userAccount } = this.props;
         return (
             <Navbar bg="dark" variant="dark">
                 <Navbar.Brand href="#home"> MyExchange </Navbar.Brand>
@@ -17,14 +18,14 @@ class Header extends Component {
                         <NavDropdown.Item href="#action/3.4"> Token4 </NavDropdown.Item>
                     </NavDropdown>
                 </Nav>
-                <Navbar.Text className="justify-content-end"> { this.props.userAccount } </Navbar.Text>
+                <Navbar.Text className="justify-content-end"> { userAccount } </Navbar.Text>
             </Navbar>
         );
     }
 }
 
 const mapStateToProps = state => ({
-    userAccount: state.web3.userAccount,
+    userAccount: state.user.userAccount,
 });
 
 export default connect(mapStateToProps)(Header);

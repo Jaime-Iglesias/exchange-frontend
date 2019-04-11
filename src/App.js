@@ -2,34 +2,44 @@ import React, { Component } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 
 import { connect } from 'react-redux';
-import { getWeb3, getNetwork } from './redux/actions/web3Actions';
+import { getWeb3 } from './redux/actions/web3Actions';
+import { getAccount } from './redux/actions/userActions';
 
-import Header from "./components/Header";
-
+import Header from './components/Header';
+import Funds from './components/Funds';
 
 class App extends Component {
 
     componentDidMount() {
-        this.props.getWeb3();
+        this.props.getWeb3()
+        .then(() => this.props.getAccount());
     }
 
     render() {
+        const { isLoading, isLoaded, userAccount, error } = this.props;
         return(
             <div>
-                <Header/>
-                <Container>
-                    <Row>
-                        <Col> <p> Your account: {  } </p> </Col>
-                        <Col> <p> Your balance: {  } </p> </Col>
-                    </Row>
-                </Container>
+                { isLoading && <div className="spinner-border"/> }
+                { isLoaded && userAccount !== '' &&
+                    <div>
+                        <Header/>
+                        <Container>
+                            <Row>
+                                <Funds/>
+                            </Row>
+                        </Container>
+                    </div>
+                }
             </div>
         );
     }
 }
 
 const mapStateToProps = state => ({
-    web3Instance: state.web3.web3Instance,
+    isLoading: state.web3.isLoading,
+    isLoaded: state.web3.isLoaded,
+    error: state.web3.error,
+    userAccount: state.user.userAccount
 });
 
-export default connect(mapStateToProps, { getWeb3, getNetwork })(App);
+export default connect(mapStateToProps, { getWeb3, getAccount })(App);

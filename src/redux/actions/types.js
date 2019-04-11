@@ -1,18 +1,11 @@
 //Web3Reducer
+export const LOADING_CONTEXT = 'LOADING_CONTEXT';
 export const WEB3_LOAD = 'WEB3_LOAD';
-export const WEB3_LOAD_ERROR = 'WEB3_LOAD_ERROR';
-
 export const GET_NETWORK = 'GET_NETWORK';
-export const NETWORK_ERROR = 'NETWORK_ERROR';
-
 export const IS_METAMASK_UNLOCKED = 'IS_METAMASK_UNLOCKED';
-export const METAMASK_UNLOCKED_ERROR = 'METAMASK_UNLOCKED_ERROR';
-
 export const INSTANTIATE_CONTRACTS = 'INSTANTIATE_CONTRACTS';
-export const CONTRACT_INSTANTIATION_ERROR = 'CONTRACT_INSTANTIATION_ERROR';
-
-export const GET_TOKEN = 'GET_TOKEN';
-export const GET_EXCHANGE = 'GET_EXCHANGE';
+export const CONTEXT_LOAD_ERROR = 'CONTEXT_LOAD_ERROR';
+export const CONTEXT_LOADED = 'CONTEXT_LOADED';
 
 //userReducer
 export const GET_ACCOUNT = 'GET_ACCOUNT';
@@ -20,5 +13,6 @@ export const GET_ETH = 'GET_ETH';
 export const GET_TOKENS = 'GET_TOKENS';
 export const GET_ETH_CONTRACT = 'GET_ETH_CONTRACT';
 export const GET_TOKENS_CONTRACT = 'GET_TOKENS_CONTRACT';
+export const USER_ERROR = 'USER_ERROR';
 
 //eventReducer

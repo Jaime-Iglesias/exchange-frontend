@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { Container, Form, InputGroup, Button } from 'react-bootstrap';
 
+import { connect } from 'react-redux';
+import { getUserEthBalance, getUserTokenBalance,
+        getUserContractEthBalance, getUserContractTokenBalance } from '../redux/actions/userActions';
+
 class Withdraw extends Component {
     constructor(props) {
         super(props);
-
-        this.ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
         this.state = {
             ethValue: 0,
@@ -16,7 +18,7 @@ class Withdraw extends Component {
 
     async withdraw(amount) {
         try{
-            const amountWei = this.props.web3.utils.toWei(String(amount), 'ether');
+            const amountWei = this.props.web3Instance.utils.toWei(String(amount), 'ether');
             await this.props.exchangeContract.methods.withdraw(amountWei).send( {
                 from: this.props.userAccount
             })
@@ -29,6 +31,8 @@ class Withdraw extends Component {
                 this.setState({
                     message: 'Transaction has been mined',
                 });
+                this.props.getUserEthBalance();
+                this.props.getUserContractEthBalance();
             })
             .on('confirmation', () => {
                 this.setState({
@@ -50,7 +54,6 @@ class Withdraw extends Component {
                     });
                 }
             });
-            this.updateUserBalance();
         } catch (err) {
             console.log(err);
         }
@@ -70,6 +73,9 @@ class Withdraw extends Component {
                 this.setState({
                     message: 'Transaction has been mined',
                 });
+                this.props.getUserEthBalance();
+                this.props.getUserTokenBalance();
+                this.props.getUserContractTokenBalance();
             })
             .on('confirmation', () => {
                 this.setState({
@@ -95,7 +101,6 @@ class Withdraw extends Component {
                     });
                 }
             });
-            this.updateUserTokenBalance(tokenAddress);
         } catch (err) {
             console.log(err);
         }
@@ -110,7 +115,6 @@ class Withdraw extends Component {
             ethValue: 0,
         });
 
-        this.props.updateBalance();
     }
 
     submitFormTokens = (e) => {
@@ -121,8 +125,7 @@ class Withdraw extends Component {
         this.setState({
             tokenValue: 0,
         });
-        
-        this.props.updateBalance();
+
     }
 
     render() {
@@ -161,4 +164,14 @@ class Withdraw extends Component {
     }
 }
 
-export default Withdraw;
+const mapStateToProps = state => ({
+    web3Instance: state.web3.web3Instance,
+    exchangeContract: state.web3.exchangeContract,
+    tokenContract: state.web3.tokenContract,
+    userAccount: state.user.userAccount,
+    error: state.user.error
+});
+
+export default connect(
+    mapStateToProps,
+    { getUserEthBalance, getUserTokenBalance, getUserContractEthBalance, getUserContractTokenBalance })(Withdraw);

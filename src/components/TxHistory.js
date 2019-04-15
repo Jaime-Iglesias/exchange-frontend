@@ -1,100 +1,28 @@
 import React, { Component } from 'react';
 import {Container, Col, Card, Tabs, Tab, Table } from 'react-bootstrap';
 
+import { connect } from 'react-redux';
+import { depositListener, withdrawListener } from '../redux/actions/eventActions';
+
 class TxHistory extends Component {
 
     constructor(props){
         super(props);
 
-        this.ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
-
         this.state = {
             key: 'funds',
-            fundsEventList: [],
-            orderEventList: [],
+            fundTransactions: []
         };
 
-        this.depositListener();
-        //this.withdrawListener();
     }
 
-    eventFormater(event) {
-        if (event) {
-            var FormattedEvent = {
-                id: event.id,
-                transactionHash: event.transactionHash,
-                token: '',
-                amount: -1,
-                eventType: ''
-            };
-
-            if (event.event === "LogDepositToken") {
-                FormattedEvent.eventType = "Deposit";
-            }
-
-            if (event.event === "LogWithdrawToken") {
-                FormattedEvent.eventType = "Withdraw";
-            }
-
-            if (event.returnValues._token === this.ZERO_ADDRESS) {
-                FormattedEvent.token = "ETH";
-                FormattedEvent.amount = this.props.web3.utils.fromWei(event.returnValues._amount, 'ether');
-            } else {
-                FormattedEvent.token = "Token";
-                FormattedEvent.amount = event.returnValues._amount;
-            }
-            return FormattedEvent;
-        }
-    }
-
-    depositListener() {
-        this.props.exchangeContract.events.LogDepositToken({
-            filter: { _user: this.props.userAccount }
-        })
-        .on('data', (event) => {
-            var index = this.state.fundsEventList.indexOf(event.id);
-            if (index === -1) {
-                this.setState({
-                    fundsEventList: this.state.fundsEventList.concat(this.eventFormater(event)),
-                });
-            }
-        })
-        .on('changed', (event) => {
-            const index = this.state.fundsEventList.indexOf(event.transactionHash);
-            if (index > -1) {
-                this.setState({
-                    fundsEventList: this.state.fundsEventList.splice(index, 1),
-                });
-            }
-        })
-        .on('error', (error) => {
-            console.log(error);
-        });
-    }
-
-    withdrawListener() {
-        this.props.exchangeContract.events.LogWithdrawToken({
-            filter: { _user: this.props.userAccount }
-        })
-        .on('data', (event) => {
-            this.setState({
-                fundsEventList: this.state.fundsEventList.concat(this.eventFormater(event)),
-            });
-        })
-        .on('changed', (event) => {
-            const index = this.state.fundsEventList.indexOf(event.transactionHash);
-            if (index > -1) {
-                this.setState({
-                    fundsEventList: this.state.fundsEventList.splice(index, 1),
-                });
-            }
-        })
-        .on('error', (error) => {
-            console.log(error);
-        });
+    componentDidMount() {
+        this.props.depositListener();
+        this.props.withdrawListener();
     }
 
     renderFundsTableRows() {
+        this.setState
         return this.state.fundsEventList.map(item =>
             <tr key = { item.transactionHash }>
                 <td> { item.transactionHash } </td>
@@ -140,13 +68,20 @@ class TxHistory extends Component {
                 </Card>
             </Container>
         );
-    }
+    }*/
 
     render() {
         return(
-            <div> { this.renderEventList() } </div>
+            <div> <p>  Events </p> </div>
         );
     }
 }
 
-export default TxHistory;
+const mapStateToProps = state => ({
+    depositEvents: state.events.depositEvents,
+    withdrawEvents: state.events.withdrawEvents
+});
+
+export default connect(
+    mapStateToProps,
+    { depositListener, withdrawListener })(TxHistory);

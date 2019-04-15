@@ -42,7 +42,8 @@ export function getUserTokenBalance() {
     return async function (dispatch, getState) {
         const state = getState();
         try{
-            const balance = await state.web3.exchangeContract.methods.balanceOf(state.web3.tokenContract.options.address).call( { from: state.user.userAccount });
+            const balanceBN = await state.web3.exchangeContract.methods.balanceOf(state.web3.tokenContract.options.address).call( { from: state.user.userAccount });
+            const balance = balanceBN.toString();
             dispatch({
                 type: GET_TOKENS,
                 payload: balance
@@ -60,8 +61,9 @@ export function getUserContractEthBalance() {
     return async function (dispatch, getState) {
         const state = getState();
         try {
-            const balanceWei = await state.web3.exchangeContract.methods.getUserBalanceForToken(state.web3.zeroAddress).call( { from: state.user.userAccount });
-            const balance = state.web3.web3Instance.utils.fromWei(balanceWei, 'ether');
+            const balanceBN = await state.web3.exchangeContract.methods.getUserBalanceForToken(state.web3.zeroAddress).call( { from: state.user.userAccount });
+            const balanceWei = balanceBN.toString();
+            const balance = state.web3.web3Instance.utils.fromWei(String(balanceWei), 'ether');
             dispatch({
                 type: GET_ETH_CONTRACT,
                 payload: balance
@@ -79,7 +81,8 @@ export function getUserContractTokenBalance() {
     return async function (dispatch, getState) {
         const state = getState();
         try {
-            const balance = await state.web3.exchangeContract.methods.getUserBalanceForToken(state.web3.tokenContract.options.address).call( { from: state.user.userAccount});
+            const balanceBN = await state.web3.exchangeContract.methods.getUserBalanceForToken(state.web3.tokenContract.options.address).call( { from: state.user.userAccount});
+            const balance = balanceBN.toString();
             dispatch({
                 type: GET_TOKENS_CONTRACT,
                 payload: balance

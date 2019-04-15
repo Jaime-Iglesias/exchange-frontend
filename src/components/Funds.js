@@ -17,11 +17,11 @@ class Funds extends Component {
         };
     }
 
-    componentDidMount() {
-        this.props.getUserEthBalance();
-        this.props.getUserTokenBalance();
-        this.props.getUserContractEthBalance();
-        this.props.getUserContractTokenBalance();
+    async componentDidMount() {
+        await this.props.getUserEthBalance();
+        await this.props.getUserTokenBalance();
+        await this.props.getUserContractEthBalance();
+        await this.props.getUserContractTokenBalance();
     }
 
     renderUserBalances() {
@@ -66,6 +66,7 @@ class Funds extends Component {
                                 </Row>
                                 <Row>
                                     <Col md = "auto">
+                                        <Deposit />
                                     </Col>
                                 </Row>
                             </Tab>
@@ -77,6 +78,7 @@ class Funds extends Component {
                                 </Row>
                                 <Row>
                                     <Col md = "auto">
+                                        <Withdraw />
                                     </Col>
                                 </Row>
                             </Tab>
@@ -96,5 +98,5 @@ const mapStateToProps = state => ({
     error: state.user.error
 });
 
-export default connect(mapStateToProps, { getUserEthBalance, getUserTokenBalance,
-        getUserContractEthBalance, getUserContractTokenBalance })(Funds);
+export default connect(mapStateToProps,
+    { getUserEthBalance, getUserTokenBalance, getUserContractEthBalance, getUserContractTokenBalance })(Funds);

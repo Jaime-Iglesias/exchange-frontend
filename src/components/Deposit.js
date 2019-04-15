@@ -1,46 +1,58 @@
 import React, { Component } from 'react';
 import { Container, Form, InputGroup, Button } from 'react-bootstrap';
 
+import { connect } from 'react-redux';
+import { getUserEthBalance, getUserTokenBalance,
+        getUserContractEthBalance, getUserContractTokenBalance } from '../redux/actions/userActions';
+
 class Deposit extends Component {
+
     constructor(props) {
         super(props);
-
-        this.ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
         this.state = {
             ethValue: 0,
             tokenValue: 0,
-            message: '',
+            message: ''
         };
     }
 
-    async deposit(amount) {
+     async deposit(amount) {
         try{
-            const amountWei = this.props.web3.utils.toWei(String(amount), 'ether');
+            const amountWei = this.props.web3Instance.utils.toWei(String(amount), 'ether');
             await this.props.exchangeContract.methods.deposit().send( {
                 from: this.props.userAccount,
                 value: amountWei
             })
-            .on('transactionHash', () => {
+            .on('transactionHash', (hash) => {
                 this.setState({
                     message: 'Transaction pending...',
                 });
+                //console.log(this.state.message);
             })
             .on('receipt', (receipt) => {
-                console.log(receipt);
                 this.setState({
                     message: 'Transaction has been mined',
                 });
+                //console.log(this.state.message);
+                this.props.getUserEthBalance();
+                this.props.getUserContractEthBalance();
             })
-            .on('confirmation', () => {
+            .on('confirmation', (confirmationNumber, receipt) => {
                 this.setState({
                     message: 'Transaction confirmed!',
                 });
+                //console.log(this.state.message);
             })
             .on('error', (err) => {
                 this.setState({
                     message: err.message,
                 });
+            })
+            .then((receipt) => {
+                console.log('never enters here');
+                this.props.getUserEthBalance();
+                this.props.getUserContractEthBalance();
             });
         } catch (err) {
             console.log(err);
@@ -53,7 +65,6 @@ class Deposit extends Component {
                 from: this.props.userAccount
             });
         } catch (err) {
-            console.log(1);
             console.log(err);
         }
     }
@@ -63,20 +74,26 @@ class Deposit extends Component {
             await this.props.exchangeContract.methods.depositToken(tokenAddress, amount).send( {
                 from: this.props.userAccount
             })
-            .on('transactionHash', () => {
+            .on('transactionHash', (hash) => {
                 this.setState({
                     message: 'Transaction pending...',
                 });
+                console.log(this.state.message);
             })
             .on('receipt', (receipt) => {
                 this.setState({
                     message: 'Transaction has been mined',
                 });
+                console.log(this.state.message);
+                this.props.getUserEthBalance();
+                this.props.getUserTokenBalance();
+                this.props.getUserContractTokenBalance();
             })
-            .on('confirmation', () => {
+            .on('confirmation', (confirmationNumber, receipt) => {
                 this.setState({
                     message: 'Transaction confirmed!',
                 });
+                console.log(this.state.message);
             })
             .on('error', (err) => {
                 if (err.message.includes("address cannot be the 0 address")) {
@@ -98,16 +115,13 @@ class Deposit extends Component {
         }
     }
 
-    submitFormEth = (e) => {
+     submitFormEth = (e) => {
         e.preventDefault();
 
         this.deposit(this.state.ethValue);
-
         this.setState({
             ethValue: 0,
         });
-
-        this.props.updateBalance();
     }
 
     submitFormTokens = (e) => {
@@ -120,7 +134,6 @@ class Deposit extends Component {
             tokenValue: 0,
         });
 
-        this.props.updateBalance();
     }
 
     render() {
@@ -159,4 +172,14 @@ class Deposit extends Component {
     }
 }
 
-export default Deposit;
+const mapStateToProps = state => ({
+    web3Instance: state.web3.web3Instance,
+    exchangeContract: state.web3.exchangeContract,
+    tokenContract: state.web3.tokenContract,
+    userAccount: state.user.userAccount,
+    error: state.user.error
+});
+
+export default connect(
+    mapStateToProps,
+    { getUserEthBalance, getUserTokenBalance, getUserContractEthBalance, getUserContractTokenBalance })(Deposit);

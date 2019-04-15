@@ -10,7 +10,7 @@ const initialState = {
 };
 
 export default function(state = initialState, action) {
-    console.log('userReducer', action);
+    //console.log('userReducer', action.type, action.payload);
     switch(action.type) {
         case GET_ACCOUNT:
             return {

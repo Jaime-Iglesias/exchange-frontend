@@ -6,6 +6,11 @@ import Web3 from 'web3';
 import Exchange from '../../contracts/MyExchange.json';
 import TestingToken from '../../contracts/TestingToken.json';
 
+const options = {
+    transactionConfirmationBlocks: 1,
+    transactionBlockTimeout: 5
+};
+
 export function getWeb3() {
     return async dispatch => {
         dispatch({
@@ -14,11 +19,12 @@ export function getWeb3() {
         });
         // Modern dapp browsers...
         if (window.ethereum) {
-            const web3 = new Web3(window.ethereum);
+            const web3 = new Web3(window.ethereum, null, options);
+            console.log('web3 version', web3.version);
+            console.log('web3 confirmation blocks', web3.transactionConfirmationBlocks);
             //Ask user permission
             try{
                 await window.ethereum.enable();
-                console.log(web3.version);
                 dispatch({
                     type: WEB3_LOAD,
                     payload: web3
@@ -32,7 +38,7 @@ export function getWeb3() {
             }
         } else if (window.web3) {
             // Legacy dapp browsers...
-            const web3 = window.web3;
+            const web3 = new Web3(window.web3, undefined, { transactionConfirmationBlocks: 1, });
             dispatch({
                 types: WEB3_LOAD,
                 payload: web3

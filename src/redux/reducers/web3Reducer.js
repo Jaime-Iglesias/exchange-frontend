@@ -13,6 +13,7 @@ const initialState = {
 };
 
 export default function(state = initialState, action) {
+    //console.log('web3Reducer', action.type, action.payload);
     switch(action.type) {
         case LOADING_CONTEXT:
             return {

@@ -7,12 +7,13 @@ import { getAccount } from './redux/actions/userActions';
 
 import Header from './components/Header';
 import Funds from './components/Funds';
+import TxHistory from './components/TxHistory';
 
 class App extends Component {
 
-    componentDidMount() {
-        this.props.getWeb3()
-        .then(() => this.props.getAccount());
+    async componentDidMount() {
+        await this.props.getWeb3();
+        await this.props.getAccount();
     }
 
     render() {
@@ -25,7 +26,10 @@ class App extends Component {
                         <Header/>
                         <Container>
                             <Row>
-                                <Funds/>
+                                <Funds />
+                            </Row>
+                            <Row>
+                                <TxHistory />
                             </Row>
                         </Container>
                     </div>

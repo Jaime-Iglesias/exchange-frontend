@@ -8,6 +8,7 @@ import { getAccount } from './redux/actions/userActions';
 import Header from './components/Header';
 import Funds from './components/Funds';
 import TxHistory from './components/TxHistory';
+import CreateOrders from './components/CreateOrders';
 
 class App extends Component {
 
@@ -27,6 +28,9 @@ class App extends Component {
                         <Container>
                             <Row>
                                 <Funds />
+                            </Row>
+                            <Row>
+                                <CreateOrders />
                             </Row>
                             <Row>
                                 <TxHistory />

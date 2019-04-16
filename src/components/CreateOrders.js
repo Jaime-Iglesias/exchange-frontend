@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap'
 import { MdCached } from 'react-icons/md';
 
+import { connect } from 'react-redux';
+
 class CreateOrders extends Component {
     constructor(props){
         super(props);
@@ -15,13 +17,49 @@ class CreateOrders extends Component {
     }
 
 
-    //sync createOrder(amountTokens, amountEth)
+    async placeOrder(tokenGetAddress, amountGet, tokenGiveAddress, amountGive) {
+        const { web3Instance, userAccount, exchangeContract } = this.props;
+        try{
+            const currentBlock = await web3Instance.eth.getBlockNumber();
+            const nonce = await web3Instance.eth.getTransactionCount(userAccount)
+            const expiration = currentBlock + 1000;
+            exchangeContract.methods.placeOrder(tokenGetAddress, amountGet, tokenGiveAddress, amountGive, expiration, nonce).send({
+                from: this.props.userAccount
+            })
+            .on('transactionHash', (hash) => {
+                //do something wth transaction hash
+            })
+            .on('confirmation', (confirmationNumber, receipt) => {
+
+            })
+            .on('receipt', (receipt) => {
+                //do something with receipt
+                console.log(receipt);
+            });
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     submitFormBuy = (e) => {
        e.preventDefault();
 
-       if (this.state.ethValueBuy !== 0 && this.state.amountTokensBuy !== 0) {
-           console.log("submit!");
-       }
+       const { tokenContract, zeroAddress } = this.props;
+       const { amountTokensBuy, ethValueBuy } = this.state;
+
+       this.placeOrder(
+           tokenContract.options.address,
+           amountTokensBuy,
+           zeroAddress,
+           ethValueBuy
+       );
+
+       this.setState({
+           ethValueBuy: 0,
+           amountTokensBuy: 0,
+       });
+
+       //console.log("submit!");
     }
 
     resetFormBuy = (e) => {
@@ -60,10 +98,6 @@ class CreateOrders extends Component {
                 </Col>
                 <Col>
                     <Form.Group>
-                    </Form.Group>
-                </Col>
-                <Col>
-                    <Form.Group>
                         <Form.Label> Total </Form.Label>
                         <Form.Control
                             disabled
@@ -79,7 +113,21 @@ class CreateOrders extends Component {
 
     submitFormSell = (e) => {
        e.preventDefault();
-       console.log("submit");
+
+       const { tokenContract, zeroAddress } = this.props;
+       const { amountTokensSell, ethValueSell } = this.state;
+
+       this.placeOrder(
+           zeroAddress,
+           ethValueSell,
+           tokenContract.options.address,
+           amountTokensSell,
+       );
+
+       this.setState({
+           ethValueSell: 0,
+           amountTokensSell: 0,
+       });
     }
 
     resetFormSell = (e) => {
@@ -149,7 +197,7 @@ class CreateOrders extends Component {
                     <Col>
                         <Card>
                             <Card.Header>
-                                Sell
+                                <Card.Title> Sell </Card.Title>
                                 <Button className = "float-right" onClick = { this.resetFormSell }> <MdCached/> </Button>
                             </Card.Header>
                             <Card.Body>
@@ -163,4 +211,14 @@ class CreateOrders extends Component {
     }
 }
 
-export default CreateOrders;
+const mapStateToProps = state => ({
+    web3Instance: state.web3.web3Instance,
+    exchangeContract: state.web3.exchangeContract,
+    tokenContract: state.web3.tokenContract,
+    zeroAddress: state.web3.zeroAddress,
+    userAccount: state.user.userAccount,
+});
+
+export default connect(
+    mapStateToProps,
+    {  })(CreateOrders);

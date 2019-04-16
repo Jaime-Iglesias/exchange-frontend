@@ -11,7 +11,6 @@ class TxHistory extends Component {
 
         this.state = {
             key: 'funds',
-            fundTransactions: []
         };
 
     }
@@ -21,14 +20,41 @@ class TxHistory extends Component {
         this.props.withdrawListener();
     }
 
+
+    formatEvents(eventArray) {
+        const formatedEvents = eventArray.map(item =>  {
+            const container = {};
+
+            container.transactionHash = item.transactionHash;
+            container.event = item.event;
+
+            if (item.returnValues._token === this.props.zeroAddress){
+                container._token = 'ETH';
+                container._amount = this.props.web3Instance.utils.fromWei(item.returnValues._amount.toString(), 'ether');
+            }
+            else {
+                container._token = 'TOKEN';
+                container._amount = item.returnValues._amount.toString();
+            }
+
+            return container;
+        });
+
+        return formatedEvents;
+    }
+
     renderFundsTableRows() {
-        this.setState
-        return this.state.fundsEventList.map(item =>
+        let events =  [...this.props.depositEvents, ...this.props.withdrawEvents];
+        let formatedEvents = this.formatEvents(events);
+        if (!events || !events.length) {
+            return <td> 'No events found' </td>;
+        }
+        return formatedEvents.map(item =>
             <tr key = { item.transactionHash }>
                 <td> { item.transactionHash } </td>
-                <td> { item.token } </td>
-                <td> { item.amount } </td>
-                <td> { item.eventType } </td>
+                <td> { item._token } </td>
+                <td> { item._amount } </td>
+                <td> { item.event } </td>
             </tr>
         );
     }
@@ -53,12 +79,12 @@ class TxHistory extends Component {
 
     renderEventList() {
         return(
-            <Container fluid>
+            <Container size="sm" responsive>
                 <Card>
                     <Card.Title> My transactions </Card.Title>
                     <Card.Body>
                         <Tabs activeKey = { this.state.key } onSelect = { key => this.setState({ key })}>
-                            <Tab eventKey = 'funds' title = 'funds'>
+                            <Tab display = 'inline' eventKey = 'funds' title = 'funds'>
                                 { this.renderFundsTab() }
                             </Tab>
                             <Tab eventKey = 'orders' title = 'my orders'>
@@ -68,18 +94,20 @@ class TxHistory extends Component {
                 </Card>
             </Container>
         );
-    }*/
+    }
 
     render() {
         return(
-            <div> <p>  Events </p> </div>
+            <div> { this.renderEventList() } </div>
         );
     }
 }
 
 const mapStateToProps = state => ({
+    web3Instance: state.web3.web3Instance,
     depositEvents: state.events.depositEvents,
-    withdrawEvents: state.events.withdrawEvents
+    withdrawEvents: state.events.withdrawEvents,
+    zeroAddress: state.web3.zeroAddress
 });
 
 export default connect(

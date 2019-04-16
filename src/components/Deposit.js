@@ -78,13 +78,13 @@ class Deposit extends Component {
                 this.setState({
                     message: 'Transaction pending...',
                 });
-                console.log(this.state.message);
+                //console.log(this.state.message);
             })
             .on('receipt', (receipt) => {
                 this.setState({
                     message: 'Transaction has been mined',
                 });
-                console.log(this.state.message);
+                //console.log(this.state.message);
                 this.props.getUserEthBalance();
                 this.props.getUserTokenBalance();
                 this.props.getUserContractTokenBalance();
@@ -93,7 +93,7 @@ class Deposit extends Component {
                 this.setState({
                     message: 'Transaction confirmed!',
                 });
-                console.log(this.state.message);
+                //console.log(this.state.message);
             })
             .on('error', (err) => {
                 if (err.message.includes("address cannot be the 0 address")) {

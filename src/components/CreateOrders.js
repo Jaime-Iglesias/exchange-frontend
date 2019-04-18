@@ -3,6 +3,7 @@ import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap'
 import { MdCached } from 'react-icons/md';
 
 import { connect } from 'react-redux';
+import { getUserEthBalance } from '../redux/actions/userActions';
 
 class CreateOrders extends Component {
     constructor(props){
@@ -16,25 +17,28 @@ class CreateOrders extends Component {
         };
     }
 
-
     async placeOrder(tokenGetAddress, amountGet, tokenGiveAddress, amountGive) {
-        const { web3Instance, userAccount, exchangeContract } = this.props;
+        const { web3Instance, userAccount, exchangeContract, expiration } = this.props;
         try{
             const currentBlock = await web3Instance.eth.getBlockNumber();
             const nonce = await web3Instance.eth.getTransactionCount(userAccount)
-            const expiration = currentBlock + 1000;
-            exchangeContract.methods.placeOrder(tokenGetAddress, amountGet, tokenGiveAddress, amountGive, expiration, nonce).send({
+            const orderExpiration = currentBlock + expiration;
+            await exchangeContract.methods.placeOrder(tokenGetAddress, amountGet, tokenGiveAddress, amountGive, orderExpiration, nonce).send({
                 from: this.props.userAccount
             })
             .on('transactionHash', (hash) => {
-                //do something wth transaction hash
+                //update eth balance
             })
             .on('confirmation', (confirmationNumber, receipt) => {
-
+                this.props.getUserEthBalance();
+                console.log('confirmation', confirmationNumber, receipt);
+                /*if (confirmationNumber === 4) {
+                    //add order to orderList
+                }*/
             })
             .on('receipt', (receipt) => {
                 //do something with receipt
-                console.log(receipt);
+                //console.log(receipt);
             });
         } catch (err) {
             console.log(err);
@@ -46,12 +50,12 @@ class CreateOrders extends Component {
 
        const { tokenContract, zeroAddress } = this.props;
        const { amountTokensBuy, ethValueBuy } = this.state;
-
+       const amountEthBuy = ethValueBuy * amountTokensBuy;
        this.placeOrder(
            tokenContract.options.address,
            amountTokensBuy,
            zeroAddress,
-           ethValueBuy
+           amountEthBuy
        );
 
        this.setState({
@@ -116,10 +120,10 @@ class CreateOrders extends Component {
 
        const { tokenContract, zeroAddress } = this.props;
        const { amountTokensSell, ethValueSell } = this.state;
-
+       const amountEthSell = amountTokensSell * ethValueSell;
        this.placeOrder(
            zeroAddress,
-           ethValueSell,
+           amountEthSell,
            tokenContract.options.address,
            amountTokensSell,
        );
@@ -217,8 +221,9 @@ const mapStateToProps = state => ({
     tokenContract: state.web3.tokenContract,
     zeroAddress: state.web3.zeroAddress,
     userAccount: state.user.userAccount,
+    expiration: state.events.expiration
 });
 
 export default connect(
     mapStateToProps,
-    {  })(CreateOrders);
+    { getUserEthBalance })(CreateOrders);

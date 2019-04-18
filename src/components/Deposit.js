@@ -35,14 +35,17 @@ class Deposit extends Component {
                     message: 'Transaction has been mined',
                 });
                 //console.log(this.state.message);
-                this.props.getUserEthBalance();
-                this.props.getUserContractEthBalance();
             })
             .on('confirmation', (confirmationNumber, receipt) => {
                 this.setState({
                     message: 'Transaction confirmed!',
                 });
+                this.props.getUserEthBalance();
+                this.props.getUserContractEthBalance();
                 //console.log(this.state.message);
+                /*if (confirmationNumber === 4) {
+                    this.props.getUserContractEthBalance();
+                }*/
             })
             .on('error', (err) => {
                 this.setState({
@@ -88,6 +91,9 @@ class Deposit extends Component {
                 this.props.getUserEthBalance();
                 this.props.getUserTokenBalance();
                 this.props.getUserContractTokenBalance();
+                /*if (confirmationNumber === 4) {
+                    this.props.getUserContractEthBalance();
+                }*/
             })
             .on('confirmation', (confirmationNumber, receipt) => {
                 this.setState({

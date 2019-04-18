@@ -9,11 +9,12 @@ import Header from './components/Header';
 import Funds from './components/Funds';
 import TxHistory from './components/TxHistory';
 import CreateOrders from './components/CreateOrders';
+import BuyOrdersList from './components/BuyOrdersList';
 
 class App extends Component {
 
     async componentDidMount() {
-        await this.props.getWeb3();
+        await this.props.getWeb3()
         await this.props.getAccount();
     }
 
@@ -31,6 +32,9 @@ class App extends Component {
                             </Row>
                             <Row>
                                 <CreateOrders />
+                            </Row>
+                            <Row>
+                                <BuyOrdersList />
                             </Row>
                             <Row>
                                 <TxHistory />

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {Container, Col, Card, Tabs, Tab, Table } from 'react-bootstrap';
 
 import { connect } from 'react-redux';
-import { depositListener, withdrawListener } from '../redux/actions/eventActions';
+import { getPastDeposits, getPastWithdraws, depositListener, withdrawListener } from '../redux/actions/eventActions';
 
 class TxHistory extends Component {
 
@@ -16,8 +16,10 @@ class TxHistory extends Component {
     }
 
     componentDidMount() {
-        this.props.depositListener();
-        this.props.withdrawListener();
+        this.props.getPastDeposits();
+        this.props.getPastWithdraws();
+        //this.props.depositListener();
+        //this.props.withdrawListener();
     }
 
 
@@ -51,7 +53,6 @@ class TxHistory extends Component {
         }
         return formatedEvents.map(item =>
             <tr key = { item.transactionHash }>
-                <td> { item.transactionHash } </td>
                 <td> { item._token } </td>
                 <td> { item._amount } </td>
                 <td> { item.event } </td>
@@ -61,10 +62,9 @@ class TxHistory extends Component {
 
     renderFundsTab() {
         return(
-            <Table size="sm" responsive>
+            <Table size="sm" responsive hover>
                 <thead>
                     <tr>
-                        <th> TransactionHash </th>
                         <th> Currency </th>
                         <th> Amount </th>
                         <th> Transaction type </th>
@@ -79,7 +79,7 @@ class TxHistory extends Component {
 
     renderEventList() {
         return(
-            <Container size="sm" responsive>
+            <Container fluid>
                 <Card>
                     <Card.Title> My transactions </Card.Title>
                     <Card.Body>
@@ -112,4 +112,4 @@ const mapStateToProps = state => ({
 
 export default connect(
     mapStateToProps,
-    { depositListener, withdrawListener })(TxHistory);
+    { getPastDeposits, getPastWithdraws, depositListener, withdrawListener })(TxHistory);

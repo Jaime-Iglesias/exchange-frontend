@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { Container, Form, InputGroup, Button } from 'react-bootstrap';
+
+import { TextField, Button } from '@material-ui/core';
 
 import { connect } from 'react-redux';
 import { getUserEthBalance, getUserTokenBalance,
         getUserContractEthBalance, getUserContractTokenBalance } from '../redux/actions/userActions';
+import { addWithdrawEvent } from '../redux/actions/eventActions';
 
 class Withdraw extends Component {
     constructor(props) {
@@ -22,22 +24,23 @@ class Withdraw extends Component {
             await this.props.exchangeContract.methods.withdraw(amountWei).send( {
                 from: this.props.userAccount
             })
-            .on('transactionHash', () => {
+            .on('transactionHash', (hash) => {
                 this.setState({
                     message: 'Transaction pending...',
                 });
             })
-            .on('receipt', () => {
+            .on('receipt', (receipt) => {
                 this.setState({
                     message: 'Transaction has been mined',
                 });
-                this.props.getUserEthBalance();
-                this.props.getUserContractEthBalance();
             })
-            .on('confirmation', () => {
+            .on('confirmation', (confirmationNumber, receipt) => {
                 this.setState({
                     message: 'Transaction confirmed!',
                 });
+                this.props.getUserEthBalance();
+                this.props.getUserContractEthBalance();
+                this.props.addWithdrawEvent(receipt.events.LogWithdrawToken);
             })
             .on('error', (err) => {
                 if (err.message.includes("not enough balance")) {
@@ -64,23 +67,24 @@ class Withdraw extends Component {
             await this.props.exchangeContract.methods.withdrawToken(tokenAddress, amount).send({
                 from: this.props.userAccount
             })
-            .on('transactionHash', () => {
+            .on('transactionHash', (has) => {
                 this.setState({
                     message: 'Transaction pending...',
                 });
             })
-            .on('receipt', () => {
+            .on('receipt', (receipt) => {
                 this.setState({
                     message: 'Transaction has been mined',
+                });
+            })
+            .on('confirmation', (confirmationNumber, receipt) => {
+                this.setState({
+                    message: 'Transaction confirmed!',
                 });
                 this.props.getUserEthBalance();
                 this.props.getUserTokenBalance();
                 this.props.getUserContractTokenBalance();
-            })
-            .on('confirmation', () => {
-                this.setState({
-                    message: 'Transaction confirmed!',
-                });
+                this.props.addWithdrawEvent(receipt.events.LogWithdrawToken);
             })
             .on('error', (err) => {
                 if (err.message.includes("address cannot be the 0 address")) {
@@ -130,36 +134,31 @@ class Withdraw extends Component {
 
     render() {
         return(
-            <Container>
-                <Form onSubmit = { this.submitFormEth }>
-                   <Form.Label> Amount in ETH </Form.Label>
-                     <InputGroup>
-                        <Form.Control
-                            value = { this.state.ethValue }
-                            onChange = { event => this.setState({ ethValue: event.target.value }) }
-                            type="number"
-                            min = {0}
-                        />
-                        <InputGroup.Append>
-                            <Button variant = "outline-secondary" type = "submit"> Withdraw </Button>
-                        </InputGroup.Append>
-                     </InputGroup>
-                </Form>
-                <Form onSubmit = { this.submitFormTokens }>
-                   <Form.Label> Amount in Tokens </Form.Label>
-                    <InputGroup>
-                       <Form.Control
-                           value = { this.state.tokenValue }
-                           onChange = { event => this.setState({ tokenValue: event.target.value }) }
-                           type="number"
-                           min = {0}
-                       />
-                       <InputGroup.Append>
-                           <Button variant = "outline-secondary" type = "submit"> Withdraw </Button>
-                       </InputGroup.Append>
-                    </InputGroup>
-                </Form>
-            </Container>
+            <React.Fragment>
+                <form onSubmit = { this.submitFormEth } >
+                    <TextField
+                        label = 'amount in ETH'
+                        value = { this.state.ethValue }
+                        onChange = { event => this.setState({ ethValue: event.target.value }) }
+                        required
+                        type = 'number'
+                        inputProps = {{ min: '0' }}
+                    />
+                    <Button variant="contained" color="primary" type = 'submit'> Withdraw </Button>
+                </form>
+                <br/>
+                <form onSubmit = { this.submitFormTokens } >
+                    <TextField
+                        label = 'amount in Tokens'
+                        value = { this.state.tokenValue }
+                        onChange = { event => this.setState({ tokenValue: event.target.value }) }
+                        required
+                        type = 'number'
+                        inputProps = {{ min: '0' }}
+                    />
+                    <Button variant="contained" color="primary" type = 'submit'> Withdraw </Button>
+                </form>
+            </React.Fragment>
         );
     }
 }
@@ -174,4 +173,4 @@ const mapStateToProps = state => ({
 
 export default connect(
     mapStateToProps,
-    { getUserEthBalance, getUserTokenBalance, getUserContractEthBalance, getUserContractTokenBalance })(Withdraw);
+    { getUserEthBalance, getUserTokenBalance, getUserContractEthBalance, getUserContractTokenBalance, addWithdrawEvent })(Withdraw);

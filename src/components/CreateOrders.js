@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap'
+
+import { Grid, TextField, Button, Card, CardHeader, CardContent } from '@material-ui/core';
+
 import { MdCached } from 'react-icons/md';
 
 import { connect } from 'react-redux';
 import { getUserEthBalance } from '../redux/actions/userActions';
+import { addOrderEvent } from '../redux/actions/eventActions';
 
 class CreateOrders extends Component {
     constructor(props){
@@ -75,43 +78,40 @@ class CreateOrders extends Component {
 
     renderBuyOrder() {
         return(
-            <Form onSubmit = { this.submitFormBuy }>
-                <Col>
-                    <Form.Group>
-                        <Form.Label> Prize (ETH) </Form.Label>
-                        <Form.Control
-                            required
-                            value = { this.state.ethValueBuy }
-                            onChange = { event => this.setState({ ethValueBuy: event.target.value }) }
-                            type = "number"
-                            min = { 0 }
-                        />
-                    </Form.Group>
-                </Col>
-                <Col>
-                    <Form.Group>
-                        <Form.Label> Amount (Tokens) </Form.Label>
-                        <Form.Control
-                            required
-                            value = { this.state.amountTokensBuy }
-                            onChange = { event => this.setState({ amountTokensBuy: event.target.value }) }
-                            type = "number"
-                            min = { 0 }
-                        />
-                    </Form.Group>
-                </Col>
-                <Col>
-                    <Form.Group>
-                        <Form.Label> Total </Form.Label>
-                        <Form.Control
-                            disabled
-                            value = { this.state.ethValueBuy * this.state.amountTokensBuy }
-                            type = "number"
-                        />
-                    </Form.Group>
-                </Col>
-                <Button type = "submit"> Buy </Button>
-            </Form>
+            <form onSubmit = { this.submitFormBuy }>
+                <TextField
+                    label = 'Price (ETH)'
+                    required
+                    value = { this.state.ethValueBuy }
+                    onChange = { event => this.setState({ ethValueBuy: event.target.value }) }
+                    type = 'number'
+                    inputProps = {{ min: '0' }}
+                />
+                <br />
+                <TextField
+                    label = 'Amount (Tokens)'
+                    required
+                    value = { this.state.amountTokensBuy }
+                    onChange = { event => this.setState({ amountTokensBuy: event.target.value }) }
+                    type = 'number'
+                    inputProps = {{ min: '0' }}
+                />
+                <br />
+                <TextField
+                    label = 'Total'
+                    disabled
+                    value = { this.state.ethValueBuy * this.state.amountTokensBuy }
+                    type = 'number'
+                />
+                <br />
+                <Button
+                    variant="contained"
+                    color="primary"
+                    type = 'submit'
+                >
+                    Buy
+                </Button>
+            </form>
         );
     }
 
@@ -143,74 +143,67 @@ class CreateOrders extends Component {
 
     renderSellOrder() {
         return(
-            <Form onSubmit = { this.submitFormSell }>
-                <Col>
-                    <Form.Group>
-                        <Form.Label> Prize (ETH) </Form.Label>
-                        <Form.Control
-                            required
-                            value = { this.state.ethValueSell }
-                            onChange = { event => this.setState({ ethValueSell: event.target.value }) }
-                            type = "number"
-                            min = { 0 }
-                        />
-                    </Form.Group>
-                </Col>
-                <Col>
-                    <Form.Group>
-                        <Form.Label> Amount (Tokens) </Form.Label>
-                        <Form.Control
-                            required
-                            value = { this.state.amountTokensSell }
-                            onChange = { event => this.setState({ amountTokensSell: event.target.value }) }
-                            type = "number"
-                            min = { 0 }
-                        />
-                    </Form.Group>
-                </Col>
-                <Col>
-                    <Form.Group>
-                        <Form.Label> Total </Form.Label>
-                        <Form.Control
-                            disabled
-                            value = { this.state.ethValueSell * this.state.amountTokensSell }
-                            type = "number"
-                        />
-                    </Form.Group>
-                </Col>
-                <Button type = "submit"> Sell </Button>
-            </Form>
+            <form onSubmit = { this.submitFormSell }>
+                <TextField
+                    label = 'Price (ETH)'
+                    required
+                    value = { this.state.ethValueSell }
+                    onChange = { event => this.setState({ ethValueSell: event.target.value }) }
+                    type = 'number'
+                    inputProps = {{ min: '0' }}
+                />
+                <br />
+                <TextField
+                    label = 'Amount (Tokens)'
+                    required
+                    value = { this.state.amountTokensSell }
+                    onChange = { event => this.setState({ amountTokensSell: event.target.value }) }
+                    type = 'number'
+                    inputProps = {{ min: '0' }}
+                />
+                <br />
+                <TextField
+                    label = 'Total'
+                    disabled
+                    value = { this.state.ethValueSell * this.state.amountTokensSell }
+                    type = 'number'
+                />
+                <br />
+                <Button
+                    variant="contained"
+                    color="primary"
+                    type = 'submit'
+                >
+                    Sell
+                </Button>
+            </form>
         );
     }
 
     render() {
         return(
-            <Container fluid>
-                <Row>
-                    <Col>
-                        <Card>
-                            <Card.Header>
-                                <Card.Title> Buy </Card.Title>
-                                <Button className = "float-right" onClick = { this.resetFormBuy }> <MdCached/> </Button>
-                            </Card.Header>
-                            <Card.Body>
-                                { this.renderBuyOrder() }
-                            </Card.Body>
-                        </Card>
-                    </Col>
-                    <Col>
-                        <Card>
-                            <Card.Header>
-                                <Card.Title> Sell </Card.Title>
-                                <Button className = "float-right" onClick = { this.resetFormSell }> <MdCached/> </Button>
-                            </Card.Header>
-                            <Card.Body>
-                                { this.renderSellOrder() }
-                            </Card.Body>
-                        </Card>
-                    </Col>
-                </Row>
-            </Container>
+            <Grid container spacing = { 8 } direction = 'row' alignItems = 'center'>
+                <Grid item>
+                    <Card raised>
+                        <CardHeader title = 'buy'>
+                            <Button className = "float-right" onClick = { this.resetFormBuy }> <MdCached/> </Button>
+                        </CardHeader>
+                        <CardContent>
+                            { this.renderBuyOrder() }
+                        </CardContent>
+                    </Card>
+                </Grid>
+                <Grid item>
+                    <Card raised>
+                        <CardHeader title = 'sell'>
+                            <Button className = "float-right" onClick = { this.resetFormSell }> <MdCached/> </Button>
+                        </CardHeader>
+                        <CardContent>
+                            { this.renderSellOrder() }
+                        </CardContent>
+                    </Card>
+                </Grid>
+            </Grid>
         );
     }
 }

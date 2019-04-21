@@ -170,6 +170,20 @@ export function getPastOrders() {
     }
 }
 
-export function createNewOrder() {
+export function addDepositEvent(depositEvent) {
+    return function(dispatch, getState) {
+        dispatch({
+            type: ADD_DEPOSIT_EVENT,
+            payload: depositEvent
+        });
+    }
+}
 
+export function addWithdrawEvent(depositEvent) {
+    return function(dispatch, getState) {
+        dispatch({
+            type: ADD_WITHDRAW_EVENT,
+            payload: depositEvent
+        });
+    }
 }

@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { Container, Form, InputGroup, Button } from 'react-bootstrap';
+
+import { TextField, Button } from '@material-ui/core';
 
 import { connect } from 'react-redux';
 import { getUserEthBalance, getUserTokenBalance,
-        getUserContractEthBalance, getUserContractTokenBalance } from '../redux/actions/userActions';
+        getUserContractEthBalance, getUserContractTokenBalance } from '../redux/actions/userActions';    
+import { addDepositEvent } from '../redux/actions/eventActions';
 
 class Deposit extends Component {
 
@@ -28,6 +30,7 @@ class Deposit extends Component {
                 this.setState({
                     message: 'Transaction pending...',
                 });
+                //notify user with pending transaction
                 //console.log(this.state.message);
             })
             .on('receipt', (receipt) => {
@@ -42,6 +45,7 @@ class Deposit extends Component {
                 });
                 this.props.getUserEthBalance();
                 this.props.getUserContractEthBalance();
+                this.props.addDepositEvent(receipt.events.LogDepositToken);
                 //console.log(this.state.message);
                 /*if (confirmationNumber === 4) {
                     this.props.getUserContractEthBalance();
@@ -91,6 +95,7 @@ class Deposit extends Component {
                 this.props.getUserEthBalance();
                 this.props.getUserTokenBalance();
                 this.props.getUserContractTokenBalance();
+                this.props.addDepositEvent(receipt.events.LogDepositToken);
                 /*if (confirmationNumber === 4) {
                     this.props.getUserContractEthBalance();
                 }*/
@@ -144,36 +149,31 @@ class Deposit extends Component {
 
     render() {
         return(
-            <Container>
-                <Form onSubmit = { this.submitFormEth }>
-                   <Form.Label> Amount in ETH </Form.Label>
-                     <InputGroup>
-                        <Form.Control
-                            value = { this.state.ethValue }
-                            onChange = { event => this.setState({ ethValue: event.target.value }) }
-                            type="number"
-                            min = {0}
-                        />
-                        <InputGroup.Append>
-                            <Button variant = "outline-secondary" type = "submit"> Deposit </Button>
-                        </InputGroup.Append>
-                     </InputGroup>
-                </Form>
-                <Form onSubmit = { this.submitFormTokens }>
-                   <Form.Label> Amount in Tokens </Form.Label>
-                    <InputGroup>
-                       <Form.Control
-                           value = { this.state.tokenValue }
-                           onChange = { event => this.setState({ tokenValue: event.target.value }) }
-                           type="number"
-                           min = {0}
-                       />
-                       <InputGroup.Append>
-                           <Button variant = "outline-secondary" type = "submit"> Deposit </Button>
-                       </InputGroup.Append>
-                    </InputGroup>
-                </Form>
-            </Container>
+            <React.Fragment>
+                <form onSubmit = { this.submitFormEth } >
+                    <TextField
+                        label = 'amount in ETH'
+                        value = { this.state.ethValue }
+                        onChange = { event => this.setState({ ethValue: event.target.value }) }
+                        required
+                        type = 'number'
+                        inputProps = {{ min: '0' }}
+                    />
+                    <Button variant="contained" color="primary" type = 'submit'> Deposit </Button>
+                </form>
+                <br/>
+                <form onSubmit = { this.submitFormTokens } >
+                    <TextField
+                        label = 'amount in Tokens'
+                        value = { this.state.tokenValue }
+                        onChange = { event => this.setState({ tokenValue: event.target.value }) }
+                        required
+                        type = 'number'
+                        inputProps = {{ min: '0' }}
+                    />
+                    <Button variant="contained" color="primary" type = 'submit'> Deposit </Button>
+                </form>
+            </React.Fragment>
         );
     }
 }
@@ -188,4 +188,4 @@ const mapStateToProps = state => ({
 
 export default connect(
     mapStateToProps,
-    { getUserEthBalance, getUserTokenBalance, getUserContractEthBalance, getUserContractTokenBalance })(Deposit);
+    { getUserEthBalance, getUserTokenBalance, getUserContractEthBalance, getUserContractTokenBalance, addDepositEvent })(Deposit);

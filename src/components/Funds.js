@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Row, Col, Container, Card, Table, Tabs, Tab } from 'react-bootstrap';
+
+import { Paper, Table, TableHead, TableBody, TableRow, TableCell, Card, CardContent, CardHeader, Grid } from '@material-ui/core';
 
 import { connect } from 'react-redux';
 import { getUserEthBalance, getUserTokenBalance,
@@ -9,13 +10,6 @@ import Deposit from './Deposit';
 import Withdraw from './Withdraw';
 
 class Funds extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            key: "deposit",
-        };
-    }
 
     async componentDidMount() {
         await this.props.getUserEthBalance();
@@ -24,68 +18,45 @@ class Funds extends Component {
         await this.props.getUserContractTokenBalance();
     }
 
-    renderUserBalances() {
+    render() {
         const { userEthBalance, userEthContractBalance, userTokenBalance, userTokenContractBalance  } = this.props;
         return(
-            <Table size="sm" responsive>
-                <thead>
-                    <tr>
-                        <th> Currency </th>
-                        <th> in wallet </th>
-                        <th> in contract </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th> ETH </th>
-                        <th> { userEthBalance } </th>
-                        <th> { userEthContractBalance  }</th>
-                    </tr>
-                    <tr>
-                        <th> tokenName </th>
-                        <th> { userTokenBalance } </th>
-                        <th> { userTokenContractBalance }</th>
-                    </tr>
-                </tbody>
-            </Table>
-        );
-     }
-
-    render() {
-        return(
-            <Container fluid>
-                <Card>
-                    <Card.Title> My Funds </Card.Title>
-                    <Card.Body>
-                        <Tabs activeKey = { this.state.key } onSelect = { key => this.setState({ key }) }>
-                            <Tab display = 'inline' eventKey = 'deposit' title = 'deposit'>
-                                <Row>
-                                    <Col>
-                                        { this.renderUserBalances() }
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col md = "auto">
-                                        <Deposit />
-                                    </Col>
-                                </Row>
-                            </Tab>
-                            <Tab eventKey = 'withdraw' title = 'withdraw'>
-                                <Row>
-                                    <Col>
-                                        { this.renderUserBalances() }
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col md = "auto">
-                                        <Withdraw />
-                                    </Col>
-                                </Row>
-                            </Tab>
-                        </Tabs>
-                    </Card.Body>
+            <Grid item>
+                <Card raised>
+                    <CardHeader title = 'My funds' />
+                    <CardContent>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell align = 'left'> Currency </TableCell>
+                                    <TableCell align = 'left'> Wallet </TableCell>
+                                    <TableCell align = 'left'> Contract </TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell align = 'left'> ETH </TableCell>
+                                    <TableCell align = 'left'> { userEthBalance } </TableCell>
+                                    <TableCell align = 'left'> { userEthContractBalance } </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell align = 'left'> TFG </TableCell>
+                                    <TableCell align = 'left'> { userTokenBalance } </TableCell>
+                                    <TableCell align = 'left'> { userTokenContractBalance } </TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                        <Grid container spacing = { 24 }>
+                            <Grid item>
+                                <Deposit />
+                            </Grid>
+                            <Grid item>
+                                <Withdraw />
+                            </Grid>
+                        </Grid>
+                    </CardContent>
                 </Card>
-            </Container>
+            </Grid>
         );
     }
 }

@@ -1,20 +1,19 @@
 import React, { Component } from 'react';
-import {Container, Col, Card, Tabs, Tab, Table } from 'react-bootstrap';
+
+import { Grid, Card, CardHeader, CardContent, Table, TableHead, TableBody, TableRow, TableCell, Tabs, Tab} from '@material-ui/core';
 
 import { connect } from 'react-redux';
 import { getPastDeposits, getPastWithdraws, depositListener, withdrawListener } from '../redux/actions/eventActions';
 
 class TxHistory extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
-            key: 'funds',
+            tabValue: 0
         };
-
     }
-
     componentDidMount() {
         this.props.getPastDeposits();
         this.props.getPastWithdraws();
@@ -23,7 +22,7 @@ class TxHistory extends Component {
     }
 
 
-    formatEvents(eventArray) {
+    formatFundEvents(eventArray) {
         const formatedEvents = eventArray.map(item =>  {
             const container = {};
 
@@ -35,7 +34,7 @@ class TxHistory extends Component {
                 container._amount = this.props.web3Instance.utils.fromWei(item.returnValues._amount.toString(), 'ether');
             }
             else {
-                container._token = 'TOKEN';
+                container._token = 'TFG';
                 container._amount = item.returnValues._amount.toString();
             }
 
@@ -47,52 +46,75 @@ class TxHistory extends Component {
 
     renderFundsTableRows() {
         let events =  [...this.props.depositEvents, ...this.props.withdrawEvents];
-        let formatedEvents = this.formatEvents(events);
+        let formatedEvents = this.formatFundEvents(events);
         if (!events || !events.length) {
-            return <td> 'No events found' </td>;
+            return (
+                <TableRow>
+                    <TableCell> No items found </TableCell>
+                </TableRow>
+            );
         }
         return formatedEvents.map(item =>
-            <tr key = { item.transactionHash }>
-                <td> { item._token } </td>
-                <td> { item._amount } </td>
-                <td> { item.event } </td>
-            </tr>
+            <TableRow hover key = { item.transactionHash }>
+                <TableCell align = 'left'> { item._token } </TableCell>
+                <TableCell align = 'left'> { item._amount } </TableCell>
+                <TableCell align = 'left'> { item.event } </TableCell>
+            </TableRow>
         );
     }
 
     renderFundsTab() {
         return(
-            <Table size="sm" responsive hover>
-                <thead>
-                    <tr>
-                        <th> Currency </th>
-                        <th> Amount </th>
-                        <th> Transaction type </th>
-                    </tr>
-                </thead>
-                <tbody>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell align = 'left'> Currency </TableCell>
+                        <TableCell align = 'left'> Amount(TFG) </TableCell>
+                        <TableCell align = 'left'> Transaction type </TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
                     { this.renderFundsTableRows() }
-                </tbody>
+                </TableBody>
             </Table>
         );
     }
 
+    renderOrdersTab() {
+        return(
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell align = 'left'> Currency </TableCell>
+                        <TableCell align = 'left'> Amount </TableCell>
+                        <TableCell align = 'left'> Transaction type </TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    { this.renderFundsTableRows() }
+                </TableBody>
+            </Table>
+        );
+    }
+
+    handleChange = (event, newValue) => {
+        this.setState({ tabValue: newValue })
+    }
+
     renderEventList() {
         return(
-            <Container fluid>
-                <Card>
-                    <Card.Title> My transactions </Card.Title>
-                    <Card.Body>
-                        <Tabs activeKey = { this.state.key } onSelect = { key => this.setState({ key })}>
-                            <Tab display = 'inline' eventKey = 'funds' title = 'funds'>
-                                { this.renderFundsTab() }
-                            </Tab>
-                            <Tab eventKey = 'orders' title = 'my orders'>
-                            </Tab>
+            <Grid item>
+                <Card raised>
+                    <CardHeader title = 'My transactions'/>
+                    <CardContent>
+                        <Tabs value = { this.state.tabValue } onChange = { this.handleChange }>
+                            <Tab label = 'funds'/>
+                            <Tab label = 'my orders'/>
                         </Tabs>
-                    </Card.Body>
+                        { this.state.tabValue === 0 &&  <div> { this.renderFundsTab() } </div> }
+                    </CardContent>
                 </Card>
-            </Container>
+            </Grid>
         );
     }
 

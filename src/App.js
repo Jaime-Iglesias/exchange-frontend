@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
+
+import { Grid, CssBaseline } from '@material-ui/core';
 
 import { connect } from 'react-redux';
 import { getWeb3 } from './redux/actions/web3Actions';
@@ -9,7 +10,7 @@ import Header from './components/Header';
 import Funds from './components/Funds';
 import TxHistory from './components/TxHistory';
 import CreateOrders from './components/CreateOrders';
-import BuyOrdersList from './components/BuyOrdersList';
+import OrderList from './components/OrderList';
 
 class App extends Component {
 
@@ -21,28 +22,32 @@ class App extends Component {
     render() {
         const { isLoading, isLoaded, userAccount, error } = this.props;
         return(
-            <div>
+            <React.Fragment>
+                <CssBaseline />
                 { isLoading && <div className="spinner-border"/> }
                 { isLoaded && userAccount !== '' &&
-                    <div>
+                    <React.Fragment>
                         <Header/>
-                        <Container>
-                            <Row>
+                        <br/>
+                        <Grid container spacing = { 8 } direction = 'row' alignItems = 'flex-start' justify = 'center'>
+                            <Grid item xs = {5}>
                                 <Funds />
-                            </Row>
-                            <Row>
+                            </Grid>
+                            <Grid item xs = {4}>
                                 <CreateOrders />
-                            </Row>
-                            <Row>
-                                <BuyOrdersList />
-                            </Row>
-                            <Row>
+                            </Grid>
+                        </Grid>
+                        <Grid container spacing = { 8 } direction = 'row' alignItems = 'flex-start' justify = 'center'>
+                            <Grid item xs = {5}>
                                 <TxHistory />
-                            </Row>
-                        </Container>
-                    </div>
+                            </Grid>
+                            <Grid item>
+                                <OrderList />
+                            </Grid>
+                        </Grid>
+                    </React.Fragment>
                 }
-            </div>
+            </React.Fragment>
         );
     }
 }

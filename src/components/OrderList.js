@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 
-import { Grid, Paper, Card, CardHeader, CardContent, Table, TableHead, TableBody, TableRow, TableCell } from '@material-ui/core';
+import { Grid, Card, CardHeader, CardContent,
+         Table, TableHead, TableBody, TableRow,
+         TableCell } from '@material-ui/core';
 
 import { connect } from 'react-redux';
 import { getPastOrders } from '../redux/actions/eventActions';

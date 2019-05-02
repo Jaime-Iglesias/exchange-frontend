@@ -42,7 +42,7 @@ export function getUserTokenBalance() {
     return async function (dispatch, getState) {
         const state = getState();
         try{
-            const balanceBN = await state.web3.exchangeContract.methods.balanceOf(state.web3.tokenContract.options.address).call( { from: state.user.userAccount });
+            const balanceBN = await state.web3.exchangeContract.methods.balanceOf(state.tokens.selectedToken.address).call( { from: state.user.userAccount });
             const balance = balanceBN.toString();
             dispatch({
                 type: GET_TOKENS,
@@ -61,12 +61,17 @@ export function getUserContractEthBalance() {
     return async function (dispatch, getState) {
         const state = getState();
         try {
-            const balanceBN = await state.web3.exchangeContract.methods.getUserBalanceForToken(state.web3.zeroAddress).call( { from: state.user.userAccount });
-            const balanceWei = balanceBN.toString();
-            const balance = state.web3.web3Instance.utils.fromWei(String(balanceWei), 'ether');
+            const balance = await state.web3.exchangeContract.methods.getUserBalanceForToken(state.web3.zeroAddress).call( { from: state.user.userAccount });
+            const available = state.web3.web3Instance.utils.fromWei(String(balance.available), 'ether');
+            const locked = state.web3.web3Instance.utils.fromWei(String(balance.locked), 'ether');
+            console.log(available, "available");
+            console.log(locked, "locked");
             dispatch({
                 type: GET_ETH_CONTRACT,
-                payload: balance
+                payload: {
+                    available: available,
+                    locked: locked
+                }
             });
         } catch (err) {
             dispatch({
@@ -81,11 +86,15 @@ export function getUserContractTokenBalance() {
     return async function (dispatch, getState) {
         const state = getState();
         try {
-            const balanceBN = await state.web3.exchangeContract.methods.getUserBalanceForToken(state.web3.tokenContract.options.address).call( { from: state.user.userAccount});
-            const balance = balanceBN.toString();
+            const balance = await state.web3.exchangeContract.methods.getUserBalanceForToken(state.tokens.selectedToken.address).call( { from: state.user.userAccount });
+            const available = (balance.available).toString();
+            const locked = (balance.locked).toString();
             dispatch({
                 type: GET_TOKENS_CONTRACT,
-                payload: balance
+                payload: {
+                    available: available,
+                    locked: locked
+                }
             });
         } catch (err) {
             dispatch({

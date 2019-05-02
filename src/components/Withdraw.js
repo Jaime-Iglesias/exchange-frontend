@@ -124,7 +124,7 @@ class Withdraw extends Component {
     submitFormTokens = (e) => {
         e.preventDefault();
 
-        this.withdrawToken(this.props.tokenContract.options.address, this.state.tokenValue);
+        this.withdrawToken(this.props.token.address, this.state.tokenValue);
 
         this.setState({
             tokenValue: 0,
@@ -166,7 +166,7 @@ class Withdraw extends Component {
 const mapStateToProps = state => ({
     web3Instance: state.web3.web3Instance,
     exchangeContract: state.web3.exchangeContract,
-    tokenContract: state.web3.tokenContract,
+    token: state.tokens.selectedToken,
     userAccount: state.user.userAccount,
     error: state.user.error
 });

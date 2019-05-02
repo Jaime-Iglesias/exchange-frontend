@@ -4,8 +4,14 @@ const initialState = {
     userAccount: '',
     userEthBalance: -1,
     userTokenBalance: -1,
-    userEthContractBalance: -1,
-    userTokenContractBalance: -1,
+    userEthContractBalance: {
+        available: -1,
+        locked: -1
+    },
+    userTokenContractBalance: {
+        available: -1,
+        locked: -1
+    },
     error: ''
 };
 
@@ -30,12 +36,20 @@ export default function(state = initialState, action) {
         case GET_ETH_CONTRACT:
             return {
                 ...state,
-                userEthContractBalance: action.payload
+                userEthContractBalance: {
+                    ...state.userEthContractBalance,
+                    available: action.payload.available,
+                    locked: action.payload.locked
+                }
             };
         case GET_TOKENS_CONTRACT:
             return {
                 ...state,
-                userTokenContractBalance: action.payload
+                userTokenContractBalance: {
+                    ...state.userTokenContractBalance,
+                    available: action.payload.available,
+                    locked: action.payload.locked
+                }
             };
         case USER_ERROR:
             return {

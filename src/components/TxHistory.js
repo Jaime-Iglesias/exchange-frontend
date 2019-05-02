@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 
-import { Grid, Card, CardHeader, CardContent, Table, TableHead, TableBody, TableRow, TableCell, Tabs, Tab} from '@material-ui/core';
+import { Grid, Card, CardHeader, CardContent,
+        Table, TableHead, TableBody, TableRow,
+        TableCell, Tabs, Tab } from '@material-ui/core';
 
 import { connect } from 'react-redux';
-import { getPastDeposits, getPastWithdraws, depositListener, withdrawListener } from '../redux/actions/eventActions';
+import { getExpiration, getPastDeposits, getPastWithdraws,
+         depositListener, withdrawListener } from '../redux/actions/eventActions';
 
 class TxHistory extends Component {
 
@@ -14,13 +17,14 @@ class TxHistory extends Component {
             tabValue: 0
         };
     }
+
     componentDidMount() {
+        this.props.getExpiration();
         this.props.getPastDeposits();
         this.props.getPastWithdraws();
         //this.props.depositListener();
         //this.props.withdrawListener();
     }
-
 
     formatFundEvents(eventArray) {
         const formatedEvents = eventArray.map(item =>  {
@@ -134,4 +138,4 @@ const mapStateToProps = state => ({
 
 export default connect(
     mapStateToProps,
-    { getPastDeposits, getPastWithdraws, depositListener, withdrawListener })(TxHistory);
+    { getExpiration, getPastDeposits, getPastWithdraws, depositListener, withdrawListener })(TxHistory);

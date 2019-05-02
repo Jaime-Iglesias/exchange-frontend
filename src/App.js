@@ -3,8 +3,9 @@ import React, { Component } from 'react';
 import { Grid, CssBaseline } from '@material-ui/core';
 
 import { connect } from 'react-redux';
-import { getWeb3 } from './redux/actions/web3Actions';
+import { getWeb3, getNetwork, isMetaMaskUnlocked, getContracts } from './redux/actions/web3Actions';
 import { getAccount } from './redux/actions/userActions';
+import { getTokens } from './redux/actions/tokenActions';
 
 import Header from './components/Header';
 import Funds from './components/Funds';
@@ -14,18 +15,38 @@ import OrderList from './components/OrderList';
 
 class App extends Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            isLoading: true,
+            isLoaded: false
+        };
+    }
+
     async componentDidMount() {
-        await this.props.getWeb3()
+        await this.props.getWeb3();
+        await this.props.getNetwork();
+        await this.props.isMetaMaskUnlocked();
+        await this.props.getContracts();
         await this.props.getAccount();
+        await this.props.getTokens();
+        if (this.props.error === '') {
+            this.setState({
+                isLoading: false,
+                isLoaded: true
+            });
+        }
     }
 
     render() {
-        const { isLoading, isLoaded, userAccount, error } = this.props;
+        const { error } = this.props;
+        const { isLoading, isLoaded } = this.state;
         return(
             <React.Fragment>
                 <CssBaseline />
                 { isLoading && <div className="spinner-border"/> }
-                { isLoaded && userAccount !== '' &&
+                { isLoaded && error === "" &&
                     <React.Fragment>
                         <Header/>
                         <br/>
@@ -34,15 +55,15 @@ class App extends Component {
                                 <Funds />
                             </Grid>
                             <Grid item xs = {4}>
-                                <CreateOrders />
+
                             </Grid>
                         </Grid>
                         <Grid container spacing = { 8 } direction = 'row' alignItems = 'flex-start' justify = 'center'>
                             <Grid item xs = {5}>
-                                <TxHistory />
+
                             </Grid>
                             <Grid item>
-                                <OrderList />
+                                
                             </Grid>
                         </Grid>
                     </React.Fragment>
@@ -53,10 +74,7 @@ class App extends Component {
 }
 
 const mapStateToProps = state => ({
-    isLoading: state.web3.isLoading,
-    isLoaded: state.web3.isLoaded,
-    error: state.web3.error,
-    userAccount: state.user.userAccount
+    error: state.web3.error
 });
 
-export default connect(mapStateToProps, { getWeb3, getAccount })(App);
+export default connect(mapStateToProps, { getWeb3, getNetwork, isMetaMaskUnlocked, getContracts, getAccount, getTokens })(App);

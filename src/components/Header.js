@@ -1,33 +1,43 @@
 import React, { Component } from 'react';
-import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
-import { AppBar, Toolbar, Typography } from '@material-ui/core';
+import { AppBar, Toolbar, Typography, Select, MenuItem } from '@material-ui/core';
 
 import { connect } from 'react-redux';
 
-/*
-<Navbar bg="dark" variant="dark">
-    <Navbar.Brand href="#home"> MyExchange </Navbar.Brand>
-    <Nav className="mr-auto">
-        <NavDropdown title="Tokens" id="collasible-nav-dropdown">
-            <NavDropdown.Item href="#action/3.1"> Token1 </NavDropdown.Item>
-            <NavDropdown.Item href="#action/3.2"> Token2 </NavDropdown.Item>
-            <NavDropdown.Item href="#action/3.3"> Token3 </NavDropdown.Item>
-            <NavDropdown.Item href="#action/3.4"> Token4 </NavDropdown.Item>
-        </NavDropdown>
-    </Nav>
-    <Navbar.Text className="justify-content-end"> { userAccount } </Navbar.Text>
-</Navbar>
-*/
 class Header extends Component {
 
+/*    <Select
+        value = { this.state.selectedTokenName }
+        onChange = { this.handleChange }
+    >
+        <MenuItem value = "">
+            <em> None </em>
+        </MenuItem>
+        { tokens.map( token =>
+            <MenuItem value = { token.symbol }> { token.symbol }</MenuItem>
+        )}
+    </Select>
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            selectedTokenName: ""
+        };
+    }
+
+    handleChange = (event, newValue) => {
+        this.setState({ selectedTokenName: newValue });
+        console.log(this.state.selectedTokenName);
+    }*/
+
     render() {
-        const { userAccount } = this.props;
+        const { userAccount, tokens } = this.props;
         return (
             <AppBar position = 'static' color = 'default'>
                 <Toolbar>
                     <Typography variant = 'h6' color = 'inherit'>
                         MyExchange
                     </Typography>
+
                     <Typography variant = 'subtitle2' color = 'inherit'>
                         { userAccount }
                     </Typography>
@@ -39,6 +49,7 @@ class Header extends Component {
 
 const mapStateToProps = state => ({
     userAccount: state.user.userAccount,
+    tokens: state.tokens.tokenList
 });
 
 export default connect(mapStateToProps)(Header);

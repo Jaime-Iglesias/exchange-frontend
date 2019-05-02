@@ -17,17 +17,16 @@ class CreateOrders extends Component {
             ethValueSell: 0,
             amountTokensBuy: 0,
             amountTokensSell: 0,
+            msgValue: 0
         };
     }
 
-    async placeOrder(tokenGetAddress, amountGet, tokenGiveAddress, amountGive) {
+    async placeOrder(tokenHaveAddress, amountHave, tokenWantAddress, amountWant, msgValue) {
         const { web3Instance, userAccount, exchangeContract, expiration } = this.props;
         try{
-            const currentBlock = await web3Instance.eth.getBlockNumber();
-            const nonce = await web3Instance.eth.getTransactionCount(userAccount)
-            const orderExpiration = currentBlock + expiration;
-            await exchangeContract.methods.placeOrder(tokenGetAddress, amountGet, tokenGiveAddress, amountGive, orderExpiration, nonce).send({
-                from: this.props.userAccount
+            await exchangeContract.methods.placeOrder(tokenHaveAddress, amountHave, tokenWantAddress, amountWant).send({
+                from: this.props.userAccount,
+                value: msgValue
             })
             .on('transactionHash', (hash) => {
                 //update eth balance
@@ -55,10 +54,11 @@ class CreateOrders extends Component {
        const { amountTokensBuy, ethValueBuy } = this.state;
        const amountEthBuy = ethValueBuy * amountTokensBuy;
        this.placeOrder(
+           zeroAddress,
+           amountEthBuy,
            tokenContract.options.address,
            amountTokensBuy,
-           zeroAddress,
-           amountEthBuy
+           0
        );
 
        this.setState({
@@ -122,10 +122,11 @@ class CreateOrders extends Component {
        const { amountTokensSell, ethValueSell } = this.state;
        const amountEthSell = amountTokensSell * ethValueSell;
        this.placeOrder(
-           zeroAddress,
-           amountEthSell,
            tokenContract.options.address,
            amountTokensSell,
+           zeroAddress,
+           amountEthSell,
+           0
        );
 
        this.setState({

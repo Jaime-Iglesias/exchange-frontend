@@ -1,5 +1,5 @@
-import { LOADING_CONTEXT, WEB3_LOAD, GET_NETWORK, IS_METAMASK_UNLOCKED,
-        INSTANTIATE_CONTRACTS, CONTEXT_LOAD_ERROR, CONTEXT_LOADED } from './types';
+import { WEB3_LOAD, GET_NETWORK, IS_METAMASK_UNLOCKED,
+        INSTANTIATE_CONTRACTS, CONTEXT_LOAD_ERROR } from './types';
 
 import Web3 from 'web3';
 
@@ -13,10 +13,6 @@ const options = {
 
 export function getWeb3() {
     return async dispatch => {
-        dispatch({
-            type: LOADING_CONTEXT,
-            payload: true
-        });
         // Modern dapp browsers...
         if (window.ethereum) {
             const web3 = new Web3(window.ethereum, null, options);
@@ -29,7 +25,7 @@ export function getWeb3() {
                     type: WEB3_LOAD,
                     payload: web3
                 });
-                dispatch(getNetwork());
+                //dispatch(getNetwork());
             } catch (err) {
                 dispatch({
                     type: CONTEXT_LOAD_ERROR,
@@ -63,7 +59,7 @@ export function getNetwork() {
                     type: GET_NETWORK,
                     payload: networkId
                 });
-                dispatch(isMetaMaskUnlocked());
+                //dispatch(isMetaMaskUnlocked());
             } else {
                 dispatch({
                     type: CONTEXT_LOAD_ERROR,
@@ -91,7 +87,7 @@ export function isMetaMaskUnlocked() {
                     type: IS_METAMASK_UNLOCKED,
                     payload: true
                 });
-                dispatch(getContracts());
+                //dispatch(getContracts());
             } else {
                 dispatch({
                     type: CONTEXT_LOAD_ERROR,
@@ -112,21 +108,10 @@ export function getContracts() {
         try{
             const state = getState();
             const exchangeContract = new state.web3.web3Instance.eth.Contract(Exchange.abi, Exchange.networks[state.web3.netWorkId].address);
-            const tokenContract = new state.web3.web3Instance.eth.Contract(TestingToken.abi, TestingToken.networks[state.web3.netWorkId].address);
-            if (exchangeContract && tokenContract) {
+            if (exchangeContract) {
                 dispatch({
                     type: INSTANTIATE_CONTRACTS,
-                    payload: {
-                        exchangeContract: exchangeContract,
-                        tokenContract: tokenContract
-                    }
-                });
-                dispatch({
-                    type: CONTEXT_LOADED,
-                    payload: {
-                        isLoading: false,
-                        isLoaded: true
-                    }
+                    payload: exchangeContract,
                 });
             } else{
                 dispatch({

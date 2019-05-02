@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 
-import { Paper, Table, TableHead, TableBody, TableRow, TableCell, Card, CardContent, CardHeader, Grid } from '@material-ui/core';
+import { Table, TableHead, TableBody, TableRow,
+         TableCell, Card, CardContent, CardHeader, 
+         Grid } from '@material-ui/core';
 
 import { connect } from 'react-redux';
 import { getUserEthBalance, getUserTokenBalance,
@@ -37,12 +39,12 @@ class Funds extends Component {
                                 <TableRow>
                                     <TableCell align = 'left'> ETH </TableCell>
                                     <TableCell align = 'left'> { userEthBalance } </TableCell>
-                                    <TableCell align = 'left'> { userEthContractBalance } </TableCell>
+                                    <TableCell align = 'left'> { userEthContractBalance.available }({ userEthContractBalance.locked }) </TableCell>
                                 </TableRow>
                                 <TableRow>
                                     <TableCell align = 'left'> TFG </TableCell>
                                     <TableCell align = 'left'> { userTokenBalance } </TableCell>
-                                    <TableCell align = 'left'> { userTokenContractBalance } </TableCell>
+                                    <TableCell align = 'left'> { userTokenContractBalance.available }({ userTokenContractBalance.locked }) </TableCell>
                                 </TableRow>
                             </TableBody>
                         </Table>

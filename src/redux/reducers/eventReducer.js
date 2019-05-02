@@ -2,10 +2,11 @@ import { INIT_DEPOSIT_EMITTER, INIT_WITHDRAW_EMITTER,
          ADD_DEPOSIT_EVENT, ADD_WITHDRAW_EVENT,
          REMOVE_DEPOSIT_EVENT, REMOVE_WITHDRAW_EVENT,
          EVENT_ERROR, LOAD_PAST_ORDERS,
-         LOAD_PAST_DEPOSITS, LOAD_PAST_WITHDRAWS } from '../actions/types';
+         LOAD_PAST_DEPOSITS, LOAD_PAST_WITHDRAWS,
+         GET_EXPIRATION } from '../actions/types';
 
 const initialState = {
-    expiration: 10000,
+    expiration: 0,
     orders: [],
     depositEmitter: null,
     depositEvents: [],
@@ -62,6 +63,11 @@ export default function(state = initialState, action) {
                 ...state,
                 orders: action.payload
             };
+        case GET_EXPIRATION:
+            return {
+                ...state,
+                expiration: action.payload
+            }
         case EVENT_ERROR:
             return {
                 ...state,

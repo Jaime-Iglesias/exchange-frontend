@@ -2,7 +2,8 @@ import { INIT_DEPOSIT_EMITTER, INIT_WITHDRAW_EMITTER,
          ADD_DEPOSIT_EVENT, ADD_WITHDRAW_EVENT,
          REMOVE_DEPOSIT_EVENT, REMOVE_WITHDRAW_EVENT,
          EVENT_ERROR, LOAD_PAST_ORDERS,
-         LOAD_PAST_DEPOSITS, LOAD_PAST_WITHDRAWS } from '../actions/types';
+         LOAD_PAST_DEPOSITS, LOAD_PAST_WITHDRAWS,
+         GET_EXPIRATION } from './types';
 
 export function depositListener() {
     return function(dispatch, getState) {
@@ -93,9 +94,29 @@ export function withdrawListener() {
     }
 }
 
+export function getExpiration() {
+    return async function(dispatch, getState) {
+        try {
+            const state = getState();
+            const expirationBN = await state.web3.exchangeContract.methods.expirationBlocks.call( { from: state.user.userAccount });
+            const expiration = expirationBN.toString();
+            dispatch({
+                type: GET_EXPIRATION,
+                payload: expiration
+            });
+        } catch (err) {
+            console.log(err.message);
+            dispatch({
+                type: EVENT_ERROR,
+                payload: err.message || 'Something went wrong'
+            });
+        }
+    }
+}
+
 export function getPastDeposits() {
     return async function(dispatch, getState) {
-        try{
+        try {
             const state = getState();
             const currentBlock = await state.web3.web3Instance.eth.getBlockNumber();
             const depositEvents = await state.web3.exchangeContract.getPastEvents('LogDepositToken', {
@@ -121,7 +142,7 @@ export function getPastDeposits() {
 
 export function getPastWithdraws() {
     return async function(dispatch, getState) {
-        try{
+        try {
             const state = getState();
             const currentBlock = await state.web3.web3Instance.eth.getBlockNumber();
             const withdrawEvents = await state.web3.exchangeContract.getPastEvents('LogWithdrawToken', {
@@ -147,7 +168,7 @@ export function getPastWithdraws() {
 
 export function getPastOrders() {
     return async function(dispatch, getState) {
-        try{
+        try {
             const state = getState();
             const currentBlock = await state.web3.web3Instance.eth.getBlockNumber();
             const orders = await state.web3.exchangeContract.getPastEvents('LogOrder', {

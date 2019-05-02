@@ -4,7 +4,7 @@ import { TextField, Button } from '@material-ui/core';
 
 import { connect } from 'react-redux';
 import { getUserEthBalance, getUserTokenBalance,
-        getUserContractEthBalance, getUserContractTokenBalance } from '../redux/actions/userActions';    
+        getUserContractEthBalance, getUserContractTokenBalance } from '../redux/actions/userActions';
 import { addDepositEvent } from '../redux/actions/eventActions';
 
 class Deposit extends Component {
@@ -60,16 +60,6 @@ class Deposit extends Component {
                 console.log('never enters here');
                 this.props.getUserEthBalance();
                 this.props.getUserContractEthBalance();
-            });
-        } catch (err) {
-            console.log(err);
-        }
-    }
-
-    async approveContract(amount) {
-        try {
-            await this.props.tokenContract.methods.approve(this.props.exchangeContract.options.address, amount).send( {
-                from: this.props.userAccount
             });
         } catch (err) {
             console.log(err);
@@ -138,8 +128,7 @@ class Deposit extends Component {
     submitFormTokens = (e) => {
         e.preventDefault();
 
-        this.approveContract(this.state.tokenValue);
-        this.depositToken(this.props.tokenContract.options.address, this.state.tokenValue);
+        this.depositToken(this.props.token.address, this.state.tokenValue);
 
         this.setState({
             tokenValue: 0,
@@ -181,7 +170,7 @@ class Deposit extends Component {
 const mapStateToProps = state => ({
     web3Instance: state.web3.web3Instance,
     exchangeContract: state.web3.exchangeContract,
-    tokenContract: state.web3.tokenContract,
+    token: state.tokens.selectedToken,
     userAccount: state.user.userAccount,
     error: state.user.error
 });

@@ -119,12 +119,14 @@ export function getPastDeposits() {
         try {
             const state = getState();
             const currentBlock = await state.web3.web3Instance.eth.getBlockNumber();
+            //currentBlock - state.events.expiration
             const depositEvents = await state.web3.exchangeContract.getPastEvents('LogDepositToken', {
                 _user: state.user.userAccount,
-                fromBlock: currentBlock - state.events.expiration,
+                fromBlock: 0,
                 toBlock: 'latest'
             });
 
+                console.log(depositEvents, "events");
             dispatch({
                 type: LOAD_PAST_DEPOSITS,
                 payload: depositEvents
@@ -145,9 +147,10 @@ export function getPastWithdraws() {
         try {
             const state = getState();
             const currentBlock = await state.web3.web3Instance.eth.getBlockNumber();
+            //currentBlock - state.events.expiration
             const withdrawEvents = await state.web3.exchangeContract.getPastEvents('LogWithdrawToken', {
                 _user: state.user.userAccount,
-                fromBlock: currentBlock - state.events.expiration,
+                fromBlock: 0,
                 toBlock: 'latest'
             });
 

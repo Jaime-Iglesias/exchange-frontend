@@ -22,10 +22,10 @@ class CreateOrders extends Component {
     }
 
     async placeOrder(tokenHaveAddress, amountHave, tokenWantAddress, amountWant, msgValue) {
-        const { web3Instance, userAccount, exchangeContract, expiration } = this.props;
+        const { web3Instance, userAccount, exchangeContract } = this.props;
         try{
             await exchangeContract.methods.placeOrder(tokenHaveAddress, amountHave, tokenWantAddress, amountWant).send({
-                from: this.props.userAccount,
+                from: userAccount,
                 value: msgValue
             })
             .on('transactionHash', (hash) => {
@@ -50,13 +50,13 @@ class CreateOrders extends Component {
     submitFormBuy = (e) => {
        e.preventDefault();
 
-       const { tokenContract, zeroAddress } = this.props;
+       const { token, zeroAddress } = this.props;
        const { amountTokensBuy, ethValueBuy } = this.state;
        const amountEthBuy = ethValueBuy * amountTokensBuy;
        this.placeOrder(
            zeroAddress,
            amountEthBuy,
-           tokenContract.options.address,
+           token.address,
            amountTokensBuy,
            0
        );
@@ -118,11 +118,11 @@ class CreateOrders extends Component {
     submitFormSell = (e) => {
        e.preventDefault();
 
-       const { tokenContract, zeroAddress } = this.props;
+       const { token, zeroAddress } = this.props;
        const { amountTokensSell, ethValueSell } = this.state;
        const amountEthSell = amountTokensSell * ethValueSell;
        this.placeOrder(
-           tokenContract.options.address,
+           token.address,
            amountTokensSell,
            zeroAddress,
            amountEthSell,
@@ -212,10 +212,9 @@ class CreateOrders extends Component {
 const mapStateToProps = state => ({
     web3Instance: state.web3.web3Instance,
     exchangeContract: state.web3.exchangeContract,
-    tokenContract: state.web3.tokenContract,
+    token: state.tokens.selectedToken,
     zeroAddress: state.web3.zeroAddress,
     userAccount: state.user.userAccount,
-    expiration: state.events.expiration
 });
 
 export default connect(

@@ -64,8 +64,6 @@ export function getUserContractEthBalance() {
             const balance = await state.web3.exchangeContract.methods.getUserBalanceForToken(state.web3.zeroAddress).call( { from: state.user.userAccount });
             const available = state.web3.web3Instance.utils.fromWei(String(balance.available), 'ether');
             const locked = state.web3.web3Instance.utils.fromWei(String(balance.locked), 'ether');
-            console.log(available, "available");
-            console.log(locked, "locked");
             dispatch({
                 type: GET_ETH_CONTRACT,
                 payload: {

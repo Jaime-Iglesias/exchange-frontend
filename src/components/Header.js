@@ -4,30 +4,17 @@ import { AppBar, Toolbar, Typography, Select, MenuItem } from '@material-ui/core
 import { connect } from 'react-redux';
 
 class Header extends Component {
-
-/*    <Select
-        value = { this.state.selectedTokenName }
-        onChange = { this.handleChange }
-    >
-        <MenuItem value = "">
-            <em> None </em>
-        </MenuItem>
-        { tokens.map( token =>
-            <MenuItem value = { token.symbol }> { token.symbol }</MenuItem>
-        )}
-    </Select>
     constructor(props) {
         super(props);
 
         this.state = {
-            selectedTokenName: ""
+            selectedTokenName: ''
         };
     }
 
-    handleChange = (event, newValue) => {
-        this.setState({ selectedTokenName: newValue });
-        console.log(this.state.selectedTokenName);
-    }*/
+    handleChange = event => {
+        this.setState({ selectedTokenName: event.target.value });
+    }
 
     render() {
         const { userAccount, tokens } = this.props;
@@ -37,6 +24,20 @@ class Header extends Component {
                     <Typography variant = 'h6' color = 'inherit'>
                         MyExchange
                     </Typography>
+
+                    <Select
+                        value = { this.state.selectedTokenName }
+                        onChange = { this.handleChange }
+                        name = 'token'
+                        displayEmpty
+                    >
+                        <MenuItem value = "" disabled>
+                            <em> None </em>
+                        </MenuItem>
+                        { tokens.map( token =>
+                            <MenuItem key = { token.address } value = { token }> { token.symbol } </MenuItem>
+                        )}
+                    </Select>
 
                     <Typography variant = 'subtitle2' color = 'inherit'>
                         { userAccount }

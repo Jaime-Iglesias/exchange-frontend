@@ -9,18 +9,6 @@ import { getPastOrders } from '../redux/actions/eventActions';
 
 class OrderList extends Component {
 
-    componentDidMount() {
-        this.props.getPastOrders();
-    }
-
-    getBuyOrderList() {
-        const { orders, userAccount, tokenContract } = this.props;
-        const buyOrders = orders.filter(item =>
-            item.returnValues._sender !== userAccount &&
-            item.returnValues._tokenMake === tokenContract.options.address);
-        return buyOrders;
-    }
-
     renderBuyOrderList() {
         const buyOrders = this.getBuyOrderList();
         return buyOrders.map(item =>
@@ -30,14 +18,6 @@ class OrderList extends Component {
                 <TableCell align = 'left'> { item.returnValues._amountTake.toString() } </TableCell>
             </TableRow>
         );
-    }
-
-    getSellOrderList() {
-        const { orders, userAccount, zeroAddress } = this.props;
-        const sellOrders = orders.filter(item =>
-            item.returnValues._sender !== userAccount &&
-            item.returnValues._tokenMake === zeroAddress);
-        return sellOrders;
     }
 
     doSomething() {
@@ -66,12 +46,11 @@ class OrderList extends Component {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell align = 'left'> Price(ETH) </TableCell>
-                                        <TableCell align = 'left'> Amount(TFG) </TableCell>
+                                        <TableCell align = 'left'> Amount() </TableCell>
                                         <TableCell align = 'left'> Total cost(ETH) </TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    { this.renderBuyOrderList() }
                                 </TableBody>
                             </Table>
                         </CardContent>
@@ -85,12 +64,11 @@ class OrderList extends Component {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell align = 'left'> Price(ETH) </TableCell>
-                                        <TableCell align = 'left'> Amount(TFG) </TableCell>
+                                        <TableCell align = 'left'> Amount() </TableCell>
                                         <TableCell align = 'left'> Total cost(ETH) </TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    { this.renderSellOrderList() }
                                 </TableBody>
                             </Table>
                         </CardContent>
@@ -102,14 +80,12 @@ class OrderList extends Component {
 }
 
 const mapStateToProps = state => ({
-    orders: state.events.orders,
     web3Instance: state.web3.web3Instance,
     exchangeContract: state.web3.exchangeContract,
-    tokenContract: state.web3.tokenContract,
-    zeroAddress: state.web3.zeroAddress,
+    token: state.tokens.selectedToken,
     userAccount: state.user.userAccount,
 });
 
 export default connect(
     mapStateToProps,
-    { getPastOrders })(OrderList);
+    { })(OrderList);

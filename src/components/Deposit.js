@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import IERC20 from '../contracts/IERC20.json';
+
 import { TextField, Button } from '@material-ui/core';
 
 import { connect } from 'react-redux';
@@ -20,7 +22,7 @@ class Deposit extends Component {
     }
 
      async deposit(amount) {
-        try{
+        try {
             const amountWei = this.props.web3Instance.utils.toWei(String(amount), 'ether');
             await this.props.exchangeContract.methods.deposit().send( {
                 from: this.props.userAccount,
@@ -66,8 +68,22 @@ class Deposit extends Component {
         }
     }
 
+    async approve(amount) {
+        const { web3Instance, token, exchangeContract, userAccount } = this.props;
+        try {
+            const tokenContract = new web3Instance.eth.Contract(IERC20.abi, token.address);
+            await tokenContract.methods.approve(exchangeContract.options.address, amount).send({
+                from: userAccount
+            });
+
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     async depositToken(tokenAddress, amount) {
-        try{
+        try {
+            await this.approve(amount);
             await this.props.exchangeContract.methods.depositToken(tokenAddress, amount).send( {
                 from: this.props.userAccount
             })

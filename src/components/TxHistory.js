@@ -27,18 +27,19 @@ class TxHistory extends Component {
     }
 
     formatFundEvents(eventArray) {
+        const { tokens } = this.props;
         const formatedEvents = eventArray.map(item =>  {
             const container = {};
 
             container.transactionHash = item.transactionHash;
             container.event = item.event;
 
+            container._token = tokens.find(token => token.address === item.returnValues._token).symbol;
+
             if (item.returnValues._token === this.props.zeroAddress){
-                container._token = 'ETH';
                 container._amount = this.props.web3Instance.utils.fromWei(item.returnValues._amount.toString(), 'ether');
             }
             else {
-                container._token = 'TFG';
                 container._amount = item.returnValues._amount.toString();
             }
 
@@ -68,12 +69,13 @@ class TxHistory extends Component {
     }
 
     renderFundsTab() {
+        const { token } = this.props;
         return(
             <Table>
                 <TableHead>
                     <TableRow>
                         <TableCell align = 'left'> Currency </TableCell>
-                        <TableCell align = 'left'> Amount(TFG) </TableCell>
+                        <TableCell align = 'left'> Amount </TableCell>
                         <TableCell align = 'left'> Transaction type </TableCell>
                     </TableRow>
                 </TableHead>
@@ -133,6 +135,8 @@ const mapStateToProps = state => ({
     web3Instance: state.web3.web3Instance,
     depositEvents: state.events.depositEvents,
     withdrawEvents: state.events.withdrawEvents,
+    tokens: state.tokens.tokenList,
+    token: state.tokens.selectedToken,
     zeroAddress: state.web3.zeroAddress
 });
 

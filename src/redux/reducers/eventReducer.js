@@ -1,13 +1,15 @@
 import { INIT_DEPOSIT_EMITTER, INIT_WITHDRAW_EMITTER,
          ADD_DEPOSIT_EVENT, ADD_WITHDRAW_EVENT,
          REMOVE_DEPOSIT_EVENT, REMOVE_WITHDRAW_EVENT,
-         EVENT_ERROR, LOAD_PAST_ORDERS,
+         EVENT_ERROR, LOAD_PAST_ORDERS, ADD_ORDER,
          LOAD_PAST_DEPOSITS, LOAD_PAST_WITHDRAWS,
          GET_EXPIRATION } from '../actions/types';
 
 const initialState = {
     expiration: 0,
-    orders: [],
+    buyOrders: [],
+    sellOrders: [],
+    pastOrders: [],
     depositEmitter: null,
     depositEvents: [],
     withdrawEmitter: null,
@@ -61,7 +63,12 @@ export default function(state = initialState, action) {
         case LOAD_PAST_ORDERS:
             return {
                 ...state,
-                orders: action.payload
+                pastOrders: action.payload
+            };
+        case ADD_ORDER:
+            return {
+                ...state,
+                pastOrders: [...state.pastOrders, action.payload ],
             };
         case GET_EXPIRATION:
             return {

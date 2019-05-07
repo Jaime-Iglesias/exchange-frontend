@@ -4,7 +4,6 @@ import { WEB3_LOAD, GET_NETWORK, IS_METAMASK_UNLOCKED,
 import Web3 from 'web3';
 
 import Exchange from '../../contracts/MyExchange.json';
-import TestingToken from '../../contracts/TestingToken.json';
 
 const options = {
     transactionConfirmationBlocks: 1,

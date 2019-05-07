@@ -31,7 +31,7 @@ class App extends Component {
         await this.props.getContracts();
         await this.props.getAccount();
         await this.props.getTokens();
-        if (this.props.error === '') {
+        if (this.props.Web3Error === '' && this.props.tokenError === '') {
             this.setState({
                 isLoading: false,
                 isLoaded: true
@@ -40,13 +40,13 @@ class App extends Component {
     }
 
     render() {
-        const { error } = this.props;
+        const { Web3Error, tokenError } = this.props;
         const { isLoading, isLoaded } = this.state;
         return(
             <React.Fragment>
                 <CssBaseline />
                 { isLoading && <div className="spinner-border"/> }
-                { isLoaded && error === "" &&
+                { isLoaded && Web3Error === '' && tokenError === '' &&
                     <React.Fragment>
                         <Header/>
                         <br/>
@@ -55,15 +55,15 @@ class App extends Component {
                                 <Funds />
                             </Grid>
                             <Grid item xs = {4}>
-
+                                <CreateOrders />
                             </Grid>
                         </Grid>
                         <Grid container spacing = { 8 } direction = 'row' alignItems = 'flex-start' justify = 'center'>
                             <Grid item xs = {5}>
-
+                                <TxHistory />
                             </Grid>
                             <Grid item>
-                                
+                                <OrderList />
                             </Grid>
                         </Grid>
                     </React.Fragment>
@@ -74,7 +74,8 @@ class App extends Component {
 }
 
 const mapStateToProps = state => ({
-    error: state.web3.error
+    Web3Error: state.web3.error,
+    tokenError: state.tokens.error
 });
 
 export default connect(mapStateToProps, { getWeb3, getNetwork, isMetaMaskUnlocked, getContracts, getAccount, getTokens })(App);

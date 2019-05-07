@@ -35365,12 +35365,12 @@
         }
       },
       "links": {},
-      "address": "0x31B9Eb3c4afa36f0755b077Ba2406689DF9A4414",
-      "transactionHash": "0x51abca2304827ad23228e83fabee3b4182b5995391f259328ef57911aec2ddba"
+      "address": "0x665c749861781bA3B98e540774f776a0aa5e7d0f",
+      "transactionHash": "0x358cfbc281a61c63c89c053c0e52ac91a1902304983447e3de77b2a1db4dbae2"
     }
   },
   "schemaVersion": "3.0.2",
-  "updatedAt": "2019-05-01T20:51:40.960Z",
+  "updatedAt": "2019-05-07T17:23:32.092Z",
   "devdoc": {
     "methods": {
       "isOwner()": {

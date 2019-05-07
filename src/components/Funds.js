@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { Table, TableHead, TableBody, TableRow,
-         TableCell, Card, CardContent, CardHeader, 
+         TableCell, Card, CardContent, CardHeader,
          Grid } from '@material-ui/core';
 
 import { connect } from 'react-redux';
@@ -21,7 +21,7 @@ class Funds extends Component {
     }
 
     render() {
-        const { userEthBalance, userEthContractBalance, userTokenBalance, userTokenContractBalance  } = this.props;
+        const { userEthBalance, userEthContractBalance, userTokenBalance, userTokenContractBalance, token  } = this.props;
         return(
             <Grid item>
                 <Card raised>
@@ -42,7 +42,7 @@ class Funds extends Component {
                                     <TableCell align = 'left'> { userEthContractBalance.available }({ userEthContractBalance.locked }) </TableCell>
                                 </TableRow>
                                 <TableRow>
-                                    <TableCell align = 'left'> TFG </TableCell>
+                                    <TableCell align = 'left'> { token.symbol } </TableCell>
                                     <TableCell align = 'left'> { userTokenBalance } </TableCell>
                                     <TableCell align = 'left'> { userTokenContractBalance.available }({ userTokenContractBalance.locked }) </TableCell>
                                 </TableRow>
@@ -68,6 +68,7 @@ const mapStateToProps = state => ({
     userTokenBalance: state.user.userTokenBalance,
     userEthContractBalance: state.user.userEthContractBalance,
     userTokenContractBalance: state.user.userTokenContractBalance,
+    token: state.tokens.selectedToken,
     error: state.user.error
 });
 

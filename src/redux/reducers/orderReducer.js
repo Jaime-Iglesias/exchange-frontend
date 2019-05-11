@@ -1,7 +1,8 @@
-import { GET_ORDER_LIST } from '../actions/types';
+import { GET_ORDER_LIST, GET_ORDER_ERROR } from '../actions/types';
 
 const initialState = {
-    orders: [],
+    buyOrders: [],
+    sellOrders: [],
     error: ''
 }
 
@@ -10,7 +11,13 @@ export default function(state = initialState, action) {
         case GET_ORDER_LIST:
             return {
                 ...state,
-                orders: action.payload
+                buyOrders: action.payload.buyOrders,
+                sellOrders: action.payload.sellOrders
+            };
+        case GET_ORDER_ERROR:
+            return {
+                ...state,
+                error: action.payload
             };
         default:
             return state;

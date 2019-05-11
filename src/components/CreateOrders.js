@@ -7,8 +7,8 @@ import { MdCached } from 'react-icons/md';
 import IERC20 from '../contracts/IERC20.json';
 
 import { connect } from 'react-redux';
-import { getUserEthBalance } from '../redux/actions/userActions';
-import { addOrderEvent } from '../redux/actions/eventActions';
+import { getUserEthBalance, getUserTokenBalance,
+        getUserContractEthBalance, getUserContractTokenBalance } from '../redux/actions/userActions';
 
 class CreateOrders extends Component {
     constructor(props){
@@ -26,12 +26,7 @@ class CreateOrders extends Component {
 
     async placeOrder(tokenHaveAddress, amountHave, tokenWantAddress, amountWant, msgValue) {
         const { web3Instance, userAccount, exchangeContract } = this.props;
-        try{
-            console.log(tokenHaveAddress, "tokenHaveAddress");
-            console.log(amountHave, "amountHave");
-            console.log(tokenWantAddress, "tokenWantAddress");
-            console.log(amountWant, "amountWant");
-
+        try {
             await exchangeContract.methods.placeOrder(tokenHaveAddress, amountHave, tokenWantAddress, amountWant).send({
                 from: userAccount,
                 value: msgValue
@@ -41,6 +36,9 @@ class CreateOrders extends Component {
             })
             .on('confirmation', (confirmationNumber, receipt) => {
                 this.props.getUserEthBalance();
+                this.props.getUserContractEthBalance();
+                this.props.getUserTokenBalance();
+                this.props.getUserContractTokenBalance();
                 console.log('confirmation', confirmationNumber, receipt);
                 /*if (confirmationNumber === 4) {
                     //add order to orderList
@@ -62,6 +60,7 @@ class CreateOrders extends Component {
        const { amountTokensBuy, ethValueBuy } = this.state;
        const amountEthBuyEth = ethValueBuy * amountTokensBuy;
        const amountEthBuyWei = this.props.web3Instance.utils.toWei(String(amountEthBuyEth), 'ether');
+
        this.placeOrder(
            zeroAddress,
            amountEthBuyWei,
@@ -153,6 +152,7 @@ class CreateOrders extends Component {
        const { token, zeroAddress } = this.props;
        const { amountTokensSell, ethValueSell, approveAmount } = this.state;
        const amountEthSell = amountTokensSell * ethValueSell;
+       const amountEhValue = this.props.web3Instance.utils.toWei(String(amountEthSell), 'ether');
 
        if (approveAmount !== 0) {
            this.approve(approveAmount);
@@ -278,4 +278,4 @@ const mapStateToProps = state => ({
 
 export default connect(
     mapStateToProps,
-    { getUserEthBalance })(CreateOrders);
+    { getUserEthBalance, getUserTokenBalance, getUserContractEthBalance, getUserContractTokenBalance })(CreateOrders);

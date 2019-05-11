@@ -34,3 +34,4 @@ export const EVENT_ERROR = 'EVENT_ERROR';
 
 //orderReducer
 export const GET_ORDER_LIST = "GET_ORDER_LIST";
+export const GET_ORDER_ERROR = "GET_ORDER_ERROR";

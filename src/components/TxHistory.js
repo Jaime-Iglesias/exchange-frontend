@@ -89,22 +89,42 @@ class TxHistory extends Component {
         );
     }
 
-    renderOrdersTab() {
+/*renderOrdersTab() {
+        const columns = [
+            {
+                name: "tokenSymbol",
+                header: "Currency"
+            },
+            {
+                name: "haveAmount",
+                header: "Amount"
+            },
+            {
+                name: "event",
+                header: "Transaction type"
+            }
+        ];
+        const data = this.formatFundEvents([...this.props.depositEvents, ...this.props.withdrawEvents]);
         return(
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell align = 'left'> Currency </TableCell>
-                        <TableCell align = 'left'> Amount </TableCell>
-                        <TableCell align = 'left'> Transaction type </TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    { this.renderFundsTableRows() }
-                </TableBody>
-            </Table>
+            <div style = {{ height: 300 }}>
+                <AutoSizer>
+                    {({ height, width  }) => (
+                        <MuiTable
+                            data = { data }
+                            columns = { columns }
+                            includeHeaders = { true }
+                            fixedRowCount = { 1 }
+                            width = { width }
+                            height = { height }
+                            isCellHovered = {(column, rowData, hoveredColumn, hoveredRowData) =>
+                                rowData.transactionHash && rowData.transactionHash === hoveredRowData.transactionHash
+                            }
+                        />
+                    )}
+                </AutoSizer>
+            </div>
         );
-    }
+    }*/
 
     handleChange = (event, newValue) => {
         this.setState({ tabValue: newValue })

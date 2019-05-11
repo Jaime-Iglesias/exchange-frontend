@@ -4,9 +4,7 @@ export function getTokens() {
     return async function(dispatch, getState) {
         try {
             const state = getState();
-            console.log(state.web3.exchangeContract, "contract");
             const tokens = await state.web3.exchangeContract.methods.getTokens().call( { from: state.user.userAccount });
-            console.log(tokens, "tokens");
             if (tokens) {
                 const formatedTokens = tokens.map((token, index) => {
                     const container = {};

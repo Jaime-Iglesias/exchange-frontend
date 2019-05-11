@@ -4,6 +4,9 @@ import { Grid, Card, CardHeader, CardContent,
         Table, TableHead, TableBody, TableRow,
         TableCell, Tabs, Tab } from '@material-ui/core';
 
+import { AutoSizer } from 'react-virtualized';
+import MuiTable from "mui-virtualized-table";
+
 import { connect } from 'react-redux';
 import { getExpiration, getPastDeposits, getPastWithdraws,
          depositListener, withdrawListener } from '../redux/actions/eventActions';
@@ -49,40 +52,40 @@ class TxHistory extends Component {
         return formatedEvents;
     }
 
-    renderFundsTableRows() {
-        let events =  [...this.props.depositEvents, ...this.props.withdrawEvents];
-        let formatedEvents = this.formatFundEvents(events);
-        if (!events || !events.length) {
-            return (
-                <TableRow>
-                    <TableCell> No items found </TableCell>
-                </TableRow>
-            );
-        }
-        return formatedEvents.map(item =>
-            <TableRow hover key = { item.transactionHash }>
-                <TableCell align = 'left'> { item._token } </TableCell>
-                <TableCell align = 'left'> { item._amount } </TableCell>
-                <TableCell align = 'left'> { item.event } </TableCell>
-            </TableRow>
-        );
-    }
-
     renderFundsTab() {
-        const { token } = this.props;
+        const columns = [
+            {
+                name: "_token",
+                header: "Currency"
+            },
+            {
+                name: "_amount",
+                header: "Amount"
+            },
+            {
+                name: "event",
+                header: "Transaction type"
+            }
+        ];
+        const data = this.formatFundEvents([...this.props.depositEvents, ...this.props.withdrawEvents]);
         return(
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell align = 'left'> Currency </TableCell>
-                        <TableCell align = 'left'> Amount </TableCell>
-                        <TableCell align = 'left'> Transaction type </TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    { this.renderFundsTableRows() }
-                </TableBody>
-            </Table>
+            <div style = {{ height: 300 }}>
+                <AutoSizer>
+                    {({ height, width  }) => (
+                        <MuiTable
+                            data = { data }
+                            columns = { columns }
+                            includeHeaders = { true }
+                            fixedRowCount = { 1 }
+                            width = { width }
+                            height = { height }
+                            isCellHovered = {(column, rowData, hoveredColumn, hoveredRowData) =>
+                                rowData.transactionHash && rowData.transactionHash === hoveredRowData.transactionHash
+                            }
+                        />
+                    )}
+                </AutoSizer>
+            </div>
         );
     }
 

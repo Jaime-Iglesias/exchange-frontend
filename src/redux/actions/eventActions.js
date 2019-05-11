@@ -125,8 +125,7 @@ export function getPastDeposits() {
                 fromBlock: 0,
                 toBlock: 'latest'
             });
-
-                console.log(depositEvents, "events");
+            
             dispatch({
                 type: LOAD_PAST_DEPOSITS,
                 payload: depositEvents

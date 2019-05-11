@@ -7,8 +7,6 @@ import { INIT_DEPOSIT_EMITTER, INIT_WITHDRAW_EMITTER,
 
 const initialState = {
     expiration: 0,
-    buyOrders: [],
-    sellOrders: [],
     pastOrders: [],
     depositEmitter: null,
     depositEvents: [],

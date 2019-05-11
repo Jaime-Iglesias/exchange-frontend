@@ -31,3 +31,6 @@ export const LOAD_PAST_DEPOSITS = 'LOAD_PAST_DEPOSITS';
 export const LOAD_PAST_WITHDRAWS = 'LOAD_PAST_WITHDRAWS';
 export const GET_EXPIRATION = 'GET_EXPIRATION';
 export const EVENT_ERROR = 'EVENT_ERROR';
+
+//orderReducer
+export const GET_ORDER_LIST = "GET_ORDER_LIST";

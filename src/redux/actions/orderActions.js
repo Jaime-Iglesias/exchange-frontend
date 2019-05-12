@@ -15,6 +15,15 @@ export function getOpenOrders() {
                 container.wantTokenAmount = item.wantAmount.toString();
                 container.creationBlock = item.creationBlock.toString();
                 container.realIndex = orders[1][index].toString();
+                if (container.haveTokenId === "1") {
+                    container.haveTokenAmount = state.web3.web3Instance.utils.fromWei(container.haveTokenAmount, 'ether');
+                    console.log(item.haveAmount, "haveWei");
+                    console.log(container.haveTokenAmount,"haveEth");
+                } else if (container.wantTokenId === "1") {
+                    container.wantTokenAmount = state.web3.web3Instance.utils.fromWei(container.wantTokenAmount, 'ether');
+                    console.log(item.wantAmount, "wantWei");
+                    console.log(container.wantTokenAmount,"wantEth");
+                }
                 return container;
             });
 

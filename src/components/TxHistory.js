@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 
-import { Grid, Card, CardHeader, CardContent,
-        Table, TableHead, TableBody, TableRow,
-        TableCell, Tabs, Tab } from '@material-ui/core';
+import { Grid, Card, CardHeader, CardContent, Tabs, Tab } from '@material-ui/core';
 
 import { AutoSizer } from 'react-virtualized';
 import MuiTable from "mui-virtualized-table";
@@ -35,7 +33,12 @@ class TxHistory extends Component {
             const container = {};
 
             container.transactionHash = item.transactionHash;
-            container.event = item.event;
+            if (item.event === "LogDepositToken") {
+                container.event = "Deposit";
+            } else {
+                container.event = "Witdraw";
+            }
+
 
             container._token = tokens.find(token => token.address === item.returnValues._token).symbol;
 
@@ -45,6 +48,7 @@ class TxHistory extends Component {
             else {
                 container._amount = item.returnValues._amount.toString();
             }
+
 
             return container;
         });

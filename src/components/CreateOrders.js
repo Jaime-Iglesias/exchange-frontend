@@ -49,7 +49,7 @@ class CreateOrders extends Component {
                 //console.log(receipt);
             });
         } catch (err) {
-            console.log(err);
+            console.log(err.message);
         }
     }
 
@@ -57,16 +57,18 @@ class CreateOrders extends Component {
        e.preventDefault();
 
        const { token, zeroAddress } = this.props;
-       const { amountTokensBuy, ethValueBuy } = this.state;
+       const { amountTokensBuy, ethValueBuy, msgValue } = this.state;
+
        const amountEthBuyEth = ethValueBuy * amountTokensBuy;
        const amountEthBuyWei = this.props.web3Instance.utils.toWei(String(amountEthBuyEth), 'ether');
+       const msgValueWei = this.props.web3Instance.utils.toWei(String(msgValue), 'ether');
 
        this.placeOrder(
            zeroAddress,
            amountEthBuyWei,
            token.address,
            amountTokensBuy,
-           0
+           msgValueWei
        );
 
        this.setState({
@@ -88,7 +90,7 @@ class CreateOrders extends Component {
 
     renderBuyOrder() {
         return(
-            <form onSubmit = { this.submitFormBuy }>
+            <form className = 'text-center' onSubmit = { this.submitFormBuy }>
                 <TextField
                     label = 'Price (ETH)'
                     required
@@ -162,7 +164,7 @@ class CreateOrders extends Component {
            token.address,
            amountTokensSell,
            zeroAddress,
-           amountEthSell,
+           amountEhValue,
            0
        );
 
@@ -183,7 +185,7 @@ class CreateOrders extends Component {
 
     renderSellOrder() {
         return(
-            <form onSubmit = { this.submitFormSell }>
+            <form className = 'text-center' onSubmit = { this.submitFormSell }>
                 <TextField
                     label = 'Price (ETH)'
                     required
@@ -230,7 +232,7 @@ class CreateOrders extends Component {
 
     render() {
         return(
-            <Grid container spacing = { 8 } direction = 'row' alignItems = 'center'>
+            <Grid container spacing = { 8 } direction = 'row' alignItems = 'center' justify = 'center'>
                 <Grid item>
                     <Card raised>
                         <CardHeader

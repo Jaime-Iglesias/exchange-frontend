@@ -48,7 +48,7 @@ class Funds extends Component {
                                 </TableRow>
                             </TableBody>
                         </Table>
-                        <Grid container spacing = { 24 }>
+                        <Grid container spacing = { 24 } justify = 'center'>
                             <Grid item>
                                 <Deposit />
                             </Grid>

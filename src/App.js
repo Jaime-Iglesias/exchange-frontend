@@ -51,18 +51,18 @@ class App extends Component {
                         <Header/>
                         <br/>
                         <Grid container spacing = { 8 } direction = 'row' alignItems = 'flex-start' justify = 'center'>
-                            <Grid item xs = { 5 }>
+                            <Grid item sm = { 5 }>
                                 <Funds />
                             </Grid>
-                            <Grid item xs =  { 4 }>
+                            <Grid item sm = { 4 }>
                                 <CreateOrders />
                             </Grid>
                         </Grid>
                         <Grid container spacing = { 8 } direction = 'row' alignItems = 'flex-start' justify = 'center'>
-                            <Grid item xs = { 4 }>
+                            <Grid item sm = { 3 }>
                                 <TxHistory />
                             </Grid>
-                            <Grid item xs = { 4 }>
+                            <Grid item sm = { 7}>
                                 <OrderList />
                             </Grid>
                         </Grid>
